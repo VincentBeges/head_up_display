@@ -4,7 +4,7 @@ A simple tool to create head up displays over media using FFMPEG.
 The main idea of this tool is to stay pretty simple and limited. For more advanced
 overlay creation, FFMPEG is here.
 
-# Tool development
+## Tool development
 Tool should be able to:
 - generate HUD over an image or a movie (keeping codec and quality)
 - resize source media and add black bar on top and bottom
@@ -17,3 +17,7 @@ Tool should be able to:
     - timecode
 - text element can be filled dynamically using an ID in the template and a dict in the generation method
 - test all templates without giving input
+
+## Requires
+- ffmpeg with fontconfig setup at build
+- pydantic
