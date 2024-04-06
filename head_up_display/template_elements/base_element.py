@@ -129,7 +129,7 @@ class TemplateElement(ElementPosition, abc.ABC):
     value: str = ''  # Element value. Set by user (text, etc) or automatic process (date, frame, etc)
 
     def __repr__(self):
-        return f'<TemplateElement:{self.type}:"{self.value}">'
+        return f'<TemplateElement:{self.type}: "{self.value}">'
 
     @abc.abstractmethod
     def get_filter(self):

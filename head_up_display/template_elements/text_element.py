@@ -12,7 +12,7 @@ class TextElement(base_element.TemplateElement):
     """
 
     type: str = 'text'
-    text_id: str
+    text_id: str = ''  # Optional if you don't want dynamic data for this element but only a simple fixed text
 
     value: str = ''
     color: str = 'black'
@@ -48,10 +48,13 @@ class TextElement(base_element.TemplateElement):
 
         return text_filter
 
+    def __repr__(self):
+        return f'<TemplateElement:{self.type}: {self.text_id}="{self.value}">'
+
 
 if __name__ == '__main__':
     text_filter = TextElement(value='this is my text', text_id='foo')
     text_filter.horizontal_position = 'right'
     print(text_filter.get_filter())
-    print(text_filter.text_id)
+    print(text_filter.__repr__())
 
