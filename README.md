@@ -18,6 +18,14 @@ Tool should be able to:
 - text element can be filled dynamically using an ID in the template and a dict in the generation method
 - test all templates without giving input
 
+### Generate "empty" media for tests purpose
+Test color bars \
+`ffmpeg -f lavfi -i testsrc -t 30 -pix_fmt yuv420p testsrc.mp4`
+
+Test red media \
+`ffmpeg -f lavfi -i color=color=red -t 30 red.mp4`
+
 ## Requires
 - ffmpeg with fontconfig setup at build
 - pydantic
+
