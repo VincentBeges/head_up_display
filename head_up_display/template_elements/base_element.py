@@ -1,48 +1,56 @@
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, field_validator, ValidationInfo, PrivateAttr, Field, ConfigDict
 import abc
 
 """
-Storing all abstract and base object used to create template elements.
+Storing all abstract and base objects used to create template elements.
 """
 
 
 class ElementPosition(BaseModel):
     """ Represent an element position """
-    horizontal_position: str = 'center'
+    model_config = ConfigDict(validate_assignment=True)
+
+    _LEFT = PrivateAttr(default='left')
+    _CENTER = PrivateAttr(default='center')
+    _RIGHT = PrivateAttr(default='right')
+    _TOP = PrivateAttr(default='top')
+    _BOTTOM = PrivateAttr(default='bottom')
+
+    _H_POS_LIST = PrivateAttr(default=[_LEFT.default, _CENTER.default, _RIGHT.default])
+    _V_POS_LIST = PrivateAttr(default=[_TOP.default, _CENTER.default, _BOTTOM.default])
+
+    # TODO: position element using a dividing value: 3/5 -> will position element at 3/5 of the size
+
+    # All filters are not using overlay_h or overlay_w to get the size of the overlay. Text will use text_h, text_w
+    # Giving the attribute access here allow to modify it dynamically
+    _OVERLAY_H = PrivateAttr(default='overlay_h')
+    _OVERLAY_W = PrivateAttr(default='overlay_w')
+
+    horizontal_position: str = Field(default='center', validate_default=True)
     vertical_position: str = 'center'
     horizontal_margin: int = 10  # In % of the overlay width
     vertical_margin: int = 20  # In % of the overlay height
 
-    _LEFT = 'left'
-    _CENTER = "center"
-    _RIGHT = 'right'
-    _TOP = 'top'
-    _BOTTOM = 'bottom'
-
-    _H_POS_LIST = [_LEFT, _CENTER, _RIGHT]
-    _V_POS_LIST = [_TOP, _CENTER, _BOTTOM]
-
-    # TODO: position element using a dividing value: 3/5 -> will position element at 3/5 of the size
-
-    @field_validator('horizontal_position', mode='before')
-    def validate_horizontal_position(cls, value: str, values: dict) -> str:
+    @field_validator('horizontal_position')
+    def validate_horizontal_position(cls, value: str, info: ValidationInfo) -> str:
         """ Conform and validate horizontal position input
 
         :param value: horizontal_position input
-        :param values: all model values
+        :param info: accessing already validated data
         :return: conformed value
         """
+
         # Int values are pixel position. Can be positive or negative
         if isinstance(value, int):
             # TODO: should negative values return the main width/height size minus given value ?
             return str(value)
 
-        # String values are "shortcut" automatic values. See H_POS_LIST
+        # String values are "shortcut" automatic values. See _H_POS_LIST
         elif isinstance(value, str):
-            if value in cls._H_POS_LIST:
+            if value in cls._H_POS_LIST.default:
                 return value
-            raise ValueError(f'Given "horizontal_position" value is wrong. Should be {cls._H_POS_LIST} or an integer '
-                             f'value, not "{value}"')
+            raise ValueError(f'Given "horizontal_position" value is wrong. Should be {cls._H_POS_LIST.default} or an '
+                             f'integer value, not "{value}"')
 
         raise TypeError(f'Given "horizontal_position" type is wrong, should be an "int" or "str", not {type(value)}')
 
@@ -60,10 +68,10 @@ class ElementPosition(BaseModel):
 
         # String values are "shortcut" automatic values. See V_POS_LIST
         elif isinstance(value, str):
-            if value in cls._V_POS_LIST:
+            if value in cls._V_POS_LIST.default:
                 return value
-            raise ValueError(f'Given "vertical_position" value is wrong. Should be {cls._V_POS_LIST} or an integer '
-                             f'value, not "{value}"')
+            raise ValueError(f'Given "vertical_position" value is wrong. Should be {cls._V_POS_LIST.default} or an '
+                             f'integer value, not "{value}"')
 
         raise TypeError(f'Given "vertical_position" type is wrong, should be an "int" or "str", not {type(value)}')
 
@@ -74,7 +82,7 @@ class ElementPosition(BaseModel):
         y -> vertical position
         x=0 y=0 -> top left
 
-        The x, and y expressions can contain the following parameters.
+        The x and y expressions can contain the following parameters.
             main_w, W
             main_h, H
             -> The main input width and height
@@ -83,8 +91,16 @@ class ElementPosition(BaseModel):
             overlay_h, h
             -> The overlay input width and height.
 
+        Note that x and y expressions accept different values for text
+            text_w, tw
+            text_h, th
+            (instead of overlay_w and overlay_h)
+
         Check documentation about overlay position here:
         https://ffmpeg.org/ffmpeg-filters.html#overlay-1
+
+        Check documentation about text position and syntax here:
+        https://ffmpeg.org/ffmpeg-filters.html#toc-Syntax
         """
         # Getting x position (horizontal) filter part
 
@@ -96,11 +112,11 @@ class ElementPosition(BaseModel):
 
         if isinstance(self.horizontal_position, str):
             if self.horizontal_position == self._LEFT:
-                x = f'overlay_w*{self.horizontal_margin}/100'
+                x = f'{self._OVERLAY_W}*{self.horizontal_margin}/100'
             if self.horizontal_position == self._RIGHT:
-                x = f'main_w-overlay_w-(overlay_w*{self.horizontal_margin}/100)'
+                x = f'main_w-{self._OVERLAY_W}-({self._OVERLAY_W}*{self.horizontal_margin}/100)'
             if self.horizontal_position == self._CENTER:
-                x = 'main_w/2-(overlay_w/2)'
+                x = f'main_w/2-({self._OVERLAY_W}/2)'
 
         # Getting y position (vertical) filter part
         # Vertical position value is the top left of the text
@@ -112,9 +128,9 @@ class ElementPosition(BaseModel):
 
         if isinstance(self.vertical_position, str):
             if self.vertical_position == self._TOP:
-                y = f'overlay_h*{self.vertical_margin}/100'
+                y = f'{self._OVERLAY_H}*{self.vertical_margin}/100'
             if self.vertical_position == self._BOTTOM:
-                y = f'main_h-overlay_h-(text_h*{self.vertical_margin}/100)'
+                y = f'main_h-{self._OVERLAY_H}-({self._OVERLAY_H}*{self.vertical_margin}/100)'
             if self.vertical_position == self._CENTER:
                 y = 'main_h/2'
 
@@ -142,5 +158,5 @@ class TemplateElement(ElementPosition, abc.ABC):
 
 
 if __name__ == '__main__':
-    position = ElementPosition()
+    position = ElementPosition(horizontal_position='center')
     element = TemplateElement()

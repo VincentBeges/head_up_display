@@ -16,7 +16,7 @@ class TextElement(base_element.TemplateElement):
 
     value: str = ''
     color: str = 'black'
-    font_size: str = 20
+    font_size: int = 20
 
     #TODO: https://stackoverflow.com/questions/43254634/ffmpeg-drawtext-style-bold-italics-underline
     # reinstall ffmpeg with the fontconfig to change police_file and be able to use bold, underline and italic
@@ -25,7 +25,12 @@ class TextElement(base_element.TemplateElement):
     # underline: bool = False
     # italic: bool = False
 
-    @field_validator('text_id', mode='before')
+    # Replaced "overlay_h" by "text_h" and "overlay_w" by "text_w" used in positioning expressions (drawtext)
+    # Won't work for text if we use default overlay_{} value
+    _OVERLAY_H = 'text_h'
+    _OVERLAY_W = 'text_w'
+
+    @field_validator('text_id')
     def validate_id(cls, value: str, values: dict) -> str:
         """ Ensure we have an id
 
@@ -43,7 +48,7 @@ class TextElement(base_element.TemplateElement):
         text_filter += f'fontfile={self.police_file}:'
         text_filter += f'text=\'{self.value}\':'
         text_filter += f'fontcolor={self.color}:'
-        text_filter += f'fontsize={self.font_size}:'
+        text_filter += f'fontsize={str(self.font_size)}:'
         text_filter += f'{self.get_position_filter()}'
 
         return text_filter

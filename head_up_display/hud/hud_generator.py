@@ -38,7 +38,7 @@ class HudGenerator(object):
         command = self.ffmpeg_commands.get_command_to_create_hud_using_filters(
             input_file=source_file,
             output_file=destination_file,
-            filters=self.hud_template.get_filter_complex(text_elements_data=text_elements_data))
+            filters=self.hud_template.get_filter_complex_content(text_elements_data=text_elements_data))
 
         if dry_run:
             print('Dry run generate HUD:')
@@ -46,3 +46,4 @@ class HudGenerator(object):
 
         else:
             res = subprocess.call(command, shell=True)
+            print(command)
