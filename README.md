@@ -10,13 +10,14 @@ Tool should be able to:
 - resize source media and add black bar on top and bottom
 - add hud elements using templates defined in a json file or with python classes
 - elements we can use in templates are:
-    - text
-    - date/time
-    - frame
-    - filename / filepath
-    - timecode
+    - [x] text
+    - [x] date/time
+    - [x] filename / filepath
+    - [ ] frame
+    - [ ] timecode
 - text element can be filled dynamically using an ID in the template and a dict in the generation method
 - test all templates without giving input
+
 
 ### Generate "empty" media for tests purpose
 Test color bars \

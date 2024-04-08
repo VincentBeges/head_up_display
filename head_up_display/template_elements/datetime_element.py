@@ -4,10 +4,10 @@ from pydantic import field_validator, Field
 from datetime import datetime
 
 
-VALID_TYPES = ('datetime', 'date', 'time')
+VALID_DATETIME_TYPES = ('datetime', 'date', 'time')
 
 class DatetimeElement(text_element.BaseTextElement):
-    type: str = Field(default='datetime', frozen=True)  # See VALID_TYPES
+    type: str = 'datetime'  # See VALID_DATETIME_TYPES
 
     date_time_strftime: str = '%Y-%m-%d %H:%M:%S'
     date_strftime: str = '%Y-%m-%d'
@@ -37,8 +37,8 @@ class DatetimeElement(text_element.BaseTextElement):
     @field_validator('type')
     def validate_type(cls, value, info: ValidationInfo) -> str:
         """ Ensure we have a valid type in input """
-        if value not in VALID_TYPES:
-            raise TypeError(f'Given DatetimeElement has wrong type "{value}" should be any of {VALID_TYPES}')
+        if value not in VALID_DATETIME_TYPES:
+            raise TypeError(f'Given DatetimeElement has wrong type "{value}" should be any of {VALID_DATETIME_TYPES}')
         return value
 
     def get_filter(self):

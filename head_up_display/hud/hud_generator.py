@@ -1,3 +1,4 @@
+from head_up_display import constants
 from head_up_display.ffmpeg_wrapper import commands_builder
 from head_up_display.template.hud_template import HudTemplate
 import subprocess
@@ -34,6 +35,9 @@ class HudGenerator(object):
         :param dry_run: True to dry run process and print command
         """
         text_elements_data = text_elements_data or {}
+
+        # Necessary for the FilepathElement objects
+        text_elements_data[constants.OUTPUT_PATH_TEXT_ID] = destination_file
 
         command = self.ffmpeg_commands.get_command_to_create_hud_using_filters(
             input_file=source_file,
