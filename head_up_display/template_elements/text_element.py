@@ -1,5 +1,5 @@
 from head_up_display.template_elements import base_element
-from pydantic import field_validator
+from pydantic import field_validator, ValidationInfo
 
 
 class TextElement(base_element.TemplateElement):
@@ -31,11 +31,11 @@ class TextElement(base_element.TemplateElement):
     _OVERLAY_W = 'text_w'
 
     @field_validator('text_id')
-    def validate_id(cls, value: str, values: dict) -> str:
+    def validate_id(cls, value: str, info: ValidationInfo) -> str:
         """ Ensure we have an id
 
         :param value: given id value
-        :param values: all other Element values
+        :param info: object to access already validated attributes and current validation info
         :return: given value if correct
         """
         if not value:
