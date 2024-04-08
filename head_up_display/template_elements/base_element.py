@@ -27,7 +27,7 @@ class ElementPosition(BaseModel):
     _OVERLAY_W = PrivateAttr(default='overlay_w')
 
     horizontal_position: str = Field(default='center', validate_default=True)
-    vertical_position: str = 'center'
+    vertical_position: str = Field(default='center', validate_default=True)
     horizontal_margin: int = 10  # In % of the overlay width
     vertical_margin: int = 20  # In % of the overlay height
 
@@ -141,8 +141,10 @@ class ElementPosition(BaseModel):
 class TemplateElement(ElementPosition, abc.ABC):
     """ Base of all template elements (any template element type should inherit from this class) """
 
-    type: str = ''  # Element type (text, date, frame, etc)
-    value: str = ''  # Element value. Set by user (text, etc) or automatic process (date, frame, etc)
+    # Element type (text, date, frame, etc)
+    type: str
+    # Element value. Set by user (text, etc) or automatic process (date, frame, etc)
+    value: str
 
     def __repr__(self):
         return f'<TemplateElement:{self.type}: "{self.value}">'

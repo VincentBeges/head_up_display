@@ -1,13 +1,13 @@
 from pydantic import computed_field, ValidationInfo
-from head_up_display.template_elements import base_element
-from pydantic import field_validator
+from head_up_display.template_elements import text_element
+from pydantic import field_validator, Field
 from datetime import datetime
 
 
 VALID_TYPES = ('datetime', 'date', 'time')
 
-class DatetimeElement(base_element.TemplateElement):
-    type: str = 'datetime'  # See VALID_TYPES
+class DatetimeElement(text_element.BaseTextElement):
+    type: str = Field(default='datetime', frozen=True)  # See VALID_TYPES
 
     date_time_strftime: str = '%Y-%m-%d %H:%M:%S'
     date_strftime: str = '%Y-%m-%d'
@@ -16,14 +16,6 @@ class DatetimeElement(base_element.TemplateElement):
     # Set this value if you want a full custom value
     # Emtpy value = automatic datetime process
     value: str = ''
-
-    color: str = 'black'
-    font_size: int = 20
-    police_file: str = '/Windows/fonts/arial.ttf'
-    # TODO: to fix after setup of ffmpeg fontconfig
-    # bold: bool = False
-    # underline: bool = False
-    # italic: bool = False
 
     @computed_field
     def now(self) -> datetime:
@@ -52,21 +44,12 @@ class DatetimeElement(base_element.TemplateElement):
     def get_filter(self):
         """ Get the text filter used in complex filter """
 
-        text_filter = 'drawtext='
-        text_filter += f'fontfile={self.police_file}:'
-
         if self.value:
-            # Full custom input
-            text_filter += f'text=\'{self.value}\':'
+            text = self.value
         else:
-            # Using datetime
-            text_filter += f'text=\'{self.get_date_time_as_str()}\':'
+            text = self.get_date_time_as_str()
 
-        text_filter += f'fontcolor={self.color}:'
-        text_filter += f'fontsize={str(self.font_size)}:'
-        text_filter += f'{self.get_position_filter()}'
-
-        return text_filter
+        return self._get_draw_text(text_value=text)
 
     def __repr__(self):
         return f'<TemplateElement:{self.type}: "{self.value}">'
