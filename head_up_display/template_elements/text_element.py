@@ -7,6 +7,7 @@ class BaseTextElement(base_element.TemplateElement):
 
     type: str = Field(default='base_text', frozen=True)
     value: str
+    #TODO: add a validator to ensure we espace all special characters
 
     color: str = 'black'
     font_size: int = 20

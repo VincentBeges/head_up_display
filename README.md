@@ -6,17 +6,17 @@ overlay creation, FFMPEG is here.
 
 ## Tool development
 Tool should be able to:
-- generate HUD over an image or a movie (keeping codec and quality)
-- resize source media and add black bar on top and bottom
-- add hud elements using templates defined in a json file or with python classes
-- elements we can use in templates are:
+- [ ] generate HUD over an image or a movie (keeping codec and quality)
+- [ ] resize source media and add black bar on top and bottom
+- [ ] add hud elements using templates defined in a json file or with python classes
+-  elements we can use in templates are:
     - [x] text
     - [x] date/time
     - [x] filename / filepath
-    - [ ] frame
-    - [ ] timecode
-- text element can be filled dynamically using an ID in the template and a dict in the generation method
-- test all templates without giving input
+    - [x] frame
+    - [x] timecode
+- [x] text element can be filled dynamically using an ID in the template and a dict in the generation method
+- [ ] test all templates without giving input
 
 
 ### Generate "empty" media for tests purpose
