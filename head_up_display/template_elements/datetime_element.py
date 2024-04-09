@@ -7,6 +7,9 @@ from datetime import datetime
 VALID_DATETIME_TYPES = ('datetime', 'date', 'time')
 
 class DatetimeElement(text_element.BaseTextElement):
+    """ Represent a Datetime in the HUD
+    Can be date or time or date + time
+    """
     type: str = 'datetime'  # See VALID_DATETIME_TYPES
 
     date_time_strftime: str = '%Y-%m-%d %H:%M:%S'

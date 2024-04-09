@@ -7,6 +7,9 @@ VALID_FILENAME_TYPES = ('filename', 'filepath')
 
 
 class FilepathElement(text_element.BaseTextElement):
+    """ Represent filepath in the HUD
+    Can be filepath or filename
+    """
     type: str = 'filename'
     value: str = ''
     # We use the

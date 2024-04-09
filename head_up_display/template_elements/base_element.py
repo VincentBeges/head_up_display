@@ -7,7 +7,7 @@ Storing all abstract and base objects used to create template elements.
 
 
 class ElementPosition(BaseModel):
-    """ Represent an element position """
+    """ Represent an element position. Used by any HUD element """
     model_config = ConfigDict(validate_assignment=True)
 
     _LEFT = PrivateAttr(default='left')
@@ -139,7 +139,7 @@ class ElementPosition(BaseModel):
 
 
 class TemplateElement(ElementPosition, abc.ABC):
-    """ Base of all template elements (any template element type should inherit from this class) """
+    """ Base of all HUD elements (any element type should inherit from this class) """
 
     # Element type (text, date, frame, etc)
     type: str
