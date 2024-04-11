@@ -9,7 +9,10 @@ class TimecodeElement(text_element.BaseTextElement):
     """
     type: str = Field(default='timecode', frozen=True)
     value: str = r''  # This string will be added before the timecode
-    timecode_format: str = 'mm\:ss\;ff'
+
+    # Custom time format, see https://ffmpeg.org/ffmpeg-filters.html#Text-expansion
+    pts_format: str = 'hms'
+    timecode_format: str = f'%{{pts\:{pts_format}}}'
     timecode_rate: int = Field(default=24, gt=0)
 
     @computed_field
@@ -27,7 +30,7 @@ class TimecodeElement(text_element.BaseTextElement):
             text_filter += f'text=\'{self.value}\':'
 
         # Custom element with timecode
-        text_filter += f'timecode=\'{self.timecode_format}\':'
+        text_filter += f'text=\'{self.timecode_format}\':'
         text_filter += f'rate={self.timecode_rate}:'
 
         text_filter += f'fontcolor={self.color}:'

@@ -32,6 +32,9 @@ if __name__ == '__main__':
     date_element = DatetimeElement(type='date', vertical_position='center', horizontal_position='center')
     time_element = DatetimeElement(type='time', vertical_position='bottom', horizontal_position='center')
 
+    # A timecode element
+    timecode_element = TimecodeElement(vertical_position='center', horizontal_position='center')
+
     # A hud object storing all hud elements
     hud_template = HudTemplate(template_elements=[
         # text_filter,
@@ -39,9 +42,10 @@ if __name__ == '__main__':
         # filename_element,
         # filepath_element,
         # frame_element,
-        datetime_element,
-        date_element,
-        time_element,
+        # datetime_element,
+        # date_element,
+        # time_element,
+        timecode_element,
     ])
 
     # Dynamic text input data
