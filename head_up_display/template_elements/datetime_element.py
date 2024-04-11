@@ -47,12 +47,11 @@ class DatetimeElement(text_element.BaseTextElement):
     def get_filter(self):
         """ Get the text filter used in complex filter """
 
-        if self.value:
-            text = self.value
-        else:
-            text = self.get_date_time_as_str()
+        if not self.value:
+            # Assigning to conform/validate input data
+            self.value = self.get_date_time_as_str()
 
-        return self._get_draw_text(text_value=text)
+        return self._get_draw_text(text_value=self.value)
 
     def __repr__(self):
         return f'<TemplateElement:{self.type}: "{self.value}">'

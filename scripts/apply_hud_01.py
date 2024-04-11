@@ -27,13 +27,21 @@ if __name__ == '__main__':
     # A frame element
     frame_element = FrameElement(vertical_position='top', horizontal_position='left')
 
+    # A datetime element
+    datetime_element = DatetimeElement(type='datetime', vertical_position='top', horizontal_position='center')
+    date_element = DatetimeElement(type='date', vertical_position='center', horizontal_position='center')
+    time_element = DatetimeElement(type='time', vertical_position='bottom', horizontal_position='center')
+
     # A hud object storing all hud elements
     hud_template = HudTemplate(template_elements=[
         # text_filter,
         # text_filter_dynamic,
         # filename_element,
         # filepath_element,
-        frame_element,
+        # frame_element,
+        datetime_element,
+        date_element,
+        time_element,
     ])
 
     # Dynamic text input data
