@@ -9,8 +9,11 @@ class FrameElement(text_element.BaseTextElement):
     """
     type: str = Field(default='frame', frozen=True)
     value: str = r'Frame\: '  # This string will be added before the frame
-    start_number: int = 1
-    _frame_pattern = PrivateAttr(default='%{frame_num}')
+    start_number: int = 0
+    # Number of digit for the written frame number
+    digits_number: int = 4
+    # Using drawtext expression for format the frame number with n given digits number
+    _frame_pattern = PrivateAttr(default=f'%{{expr_int_format\:n\:u\:{digits_number}}}')
 
     @computed_field
     def text_value(cls) -> str:

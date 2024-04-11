@@ -24,12 +24,16 @@ if __name__ == '__main__':
     filename_element = FilepathElement(type='filename', horizontal_position='center', vertical_position='top')
     filepath_element = FilepathElement(type='filepath', horizontal_position='center', vertical_position='center', font_size=16)
 
+    # A frame element
+    frame_element = FrameElement(vertical_position='top', horizontal_position='left')
+
     # A hud object storing all hud elements
     hud_template = HudTemplate(template_elements=[
-        text_filter,
-        text_filter_dynamic,
-        filename_element,
-        filepath_element,
+        # text_filter,
+        # text_filter_dynamic,
+        # filename_element,
+        # filepath_element,
+        frame_element,
     ])
 
     # Dynamic text input data
