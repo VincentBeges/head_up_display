@@ -1,4 +1,5 @@
 from pydantic import BaseModel, field_validator, ValidationInfo, PrivateAttr, Field, ConfigDict
+from typing import Union
 import abc
 
 """
@@ -26,10 +27,12 @@ class ElementPosition(BaseModel):
     _OVERLAY_H = PrivateAttr(default='overlay_h')
     _OVERLAY_W = PrivateAttr(default='overlay_w')
 
-    horizontal_position: str = Field(default='center', validate_default=True)
-    vertical_position: str = Field(default='center', validate_default=True)
+    horizontal_position: Union[str, int] = Field(default='center', validate_default=True)
+    vertical_position: Union[str, int] = Field(default='center', validate_default=True)
     horizontal_margin: int = 10  # In % of the overlay width
     vertical_margin: int = 20  # In % of the overlay height
+
+    #TODO: could be nice to ajust position in pixel like top - 20px
 
     @field_validator('horizontal_position')
     def validate_horizontal_position(cls, value: str, info: ValidationInfo) -> str:
@@ -44,6 +47,8 @@ class ElementPosition(BaseModel):
         if isinstance(value, int):
             # TODO: should negative values return the main width/height size minus given value ?
             return str(value)
+
+        #TODO: check if string is not a number
 
         # String values are "shortcut" automatic values. See _H_POS_LIST
         elif isinstance(value, str):
@@ -65,6 +70,8 @@ class ElementPosition(BaseModel):
         # Int values are pixel position. Can be positive or negative
         if isinstance(value, int):
             return str(value)
+
+        # TODO: check if string is not a number
 
         # String values are "shortcut" automatic values. See V_POS_LIST
         elif isinstance(value, str):

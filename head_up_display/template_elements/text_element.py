@@ -1,5 +1,10 @@
 from head_up_display.template_elements import base_element
-from pydantic import Field, model_validator
+from pydantic import Field, model_validator, field_validator, ValidationInfo
+import re
+
+# Used to replace : in value by \: -> necessary to have a valid filter_complex in ffmpeg command
+SEARCH_COLON = re.compile(r'''(?<!\\):''')
+SEARCH_SEMI_COLON = re.compile(r'''(?<!\\);''')
 
 
 class BaseTextElement(base_element.TemplateElement):
@@ -7,7 +12,6 @@ class BaseTextElement(base_element.TemplateElement):
 
     type: str = Field(default='base_text', frozen=True)
     value: str
-    #TODO: add a validator to ensure we espace all special characters
 
     color: str = 'black'
     font_size: int = 20
@@ -22,6 +26,17 @@ class BaseTextElement(base_element.TemplateElement):
     # Won't work for text if we use default overlay_{} value
     _OVERLAY_H = 'text_h'
     _OVERLAY_W = 'text_w'
+
+    @field_validator('value')
+    def validate_and_conform_value(cls, value: str, info: ValidationInfo) -> str:
+        """ Validate and conform the input value. They will be used in ffmpeg command.
+        :param value: input value
+        :param info: validation process info
+        :return: conformed value
+        """
+        value = SEARCH_COLON.sub(r'\:', value)
+        value = SEARCH_SEMI_COLON.sub(r'\;', value)
+        return value
 
     def _get_draw_text(self, text_value):
         """ Get the draw text to write text with complex_filter """

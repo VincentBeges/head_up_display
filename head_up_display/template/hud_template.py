@@ -67,7 +67,7 @@ class HudTemplate(object):
         for filter_element in self.template_elements:
 
             # For text elements using dynamic values input
-            if filter_element.type == constants.TEXT_ELEMENT_TYPE and text_elements_data.get(filter_element.text_id):
+            if hasattr(filter_element, 'text_id') and text_elements_data.get(filter_element.text_id):
                 filter_element.value = text_elements_data[filter_element.text_id].replace('\'', '\\\'')
 
             # First element of filter has no source group value like "[a]"

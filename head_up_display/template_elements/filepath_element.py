@@ -15,6 +15,8 @@ class FilepathElement(text_element.BaseTextElement):
     # We use the
     text_id: str = constants.OUTPUT_PATH_TEXT_ID
 
+    # TODO: argument to reduce length of path value
+
     @field_validator('type')
     def validate_type(cls, value, info: ValidationInfo) -> str:
         """ Ensure we have a valid type in input """
@@ -39,8 +41,7 @@ class FilepathElement(text_element.BaseTextElement):
         """ Get filter to write path in HUD """
 
         if not self.value:
-            #TODO: error, debug or raising ?
-            return
+            raise RuntimeError('Failed to get the filepath filter value')
 
         if self.type is 'filename':
             text = os.path.basename(self.value)
