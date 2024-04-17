@@ -1,5 +1,6 @@
 from head_up_display.template_elements import base_element
 from pydantic import Field, model_validator, field_validator, ValidationInfo
+from typing import Union
 import re
 
 # Used to replace : in value by \: -> necessary to have a valid filter_complex in ffmpeg command
@@ -14,7 +15,7 @@ class BaseTextElement(base_element.TemplateElement):
     value: str
 
     color: str = 'black'
-    font_size: int = 20
+    font_size: Union[int, float] = 20
     #TODO: https://stackoverflow.com/questions/43254634/ffmpeg-drawtext-style-bold-italics-underline
     # reinstall ffmpeg with the fontconfig to change police_file and be able to use bold, underline and italic
     police_file: str = '/Windows/fonts/arial.ttf'

@@ -2,6 +2,12 @@ from dataclasses import dataclass
 import os
 
 
+# cmd = f'ffmpeg -y -hide_banner -i {source_file} -q:v 1 -qmin 1 -filter_complex ' \
+#       f'"scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:{1080 + (BLACK_BAR_HEIGHT * 2)}
+#       :(ow-iw)/2:(oh-ih)/2,setsar=1" ' \
+#       f'{destination_file}'
+
+
 @dataclass
 class FFMPEGCommandsBuilder(object):
     """ Storing ffmpeg commands elements """
@@ -9,6 +15,7 @@ class FFMPEGCommandsBuilder(object):
     override_files: str = '-y'
     hide_banner: str = '-hide_banner'
     add_input: str = '-i {0}'
+    keep_video_quality = '-q:v 1 -qmin 1'
     complex_filters: str = '-filter_complex "{0}"'
     output: str = '{0}'
 

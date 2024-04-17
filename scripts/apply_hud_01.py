@@ -5,6 +5,7 @@ from head_up_display.template_elements.filepath_element import FilepathElement
 from head_up_display.template_elements.frame_element import FrameElement
 from head_up_display.template_elements.datetime_element import DatetimeElement
 from head_up_display.template_elements.timecode_element import TimecodeElement
+from head_up_display.hud.generation_config import GenerationConfig
 import os
 
 EXAMPLE_FILES_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..', 'examples'))
@@ -33,7 +34,7 @@ if __name__ == '__main__':
     time_element = DatetimeElement(type='time', vertical_position='bottom', horizontal_position='center')
 
     # A timecode element
-    timecode_element = TimecodeElement(vertical_position='center', horizontal_position='center')
+    timecode_element = TimecodeElement(vertical_position='top', horizontal_position='center', color='white')
 
     # A hud object storing all hud elements
     hud_template = HudTemplate(template_elements=[
@@ -52,6 +53,11 @@ if __name__ == '__main__':
     text_elements_data = {
         'foo': 'Hello foo'
     }
+
+    config = GenerationConfig
+    config.black_bar_height = 40
+    # config.do_resize = False
+    # config.add_black_bar = False
 
     # The main class to apply the hud over a media
     hud_generator = HudGenerator(hud_template=hud_template)

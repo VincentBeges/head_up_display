@@ -1,5 +1,4 @@
 from head_up_display.template_elements import base_element
-from head_up_display import constants
 import string
 
 
@@ -39,6 +38,36 @@ class HudTemplate(object):
                                f'See "HudTemplate.FILTERS_INCREMENT" list')
 
         self.template_elements.append(element)
+
+    def resize_elements_from_black_bar_size(self,
+                                            black_bar_height: int,
+                                            margin: float = 10.0,
+                                            override_existing_values: bool = True,
+                                            ):
+        """ Update the font_size of any text element (text, datetime, frame, ...) to fit in the black bars.
+        Result will be:   black bar height size - margin in percent
+
+        :param black_bar_height: The black bar height used in resize calcul
+        :param margin: A margin in percent. 10% -> will reduce text size of 10%
+        :param override_existing_values: True to override any font_size existing value. False if you want to resize
+            font_size only if existing value is 0
+        """
+        # 1 point = 1.333333 pixel
+        point_pixel_ratio = 1.333333
+
+        for element in self.template_elements:
+
+            # Resize text elements (text, datetime, etc)
+            size = getattr(element, 'font_size', None)
+            if size is None:
+                # Not a text element to auto resize
+                continue
+
+            if not override_existing_values and size > 0:
+                continue
+
+            new_size_value = (black_bar_height * point_pixel_ratio) - (black_bar_height * margin / 100)
+            setattr(element, 'font_size', new_size_value)
 
     def get_filter_complex_content(self, text_elements_data: dict = None) -> str:
         """ Get the filter complex string to use in ffmpeg content.
