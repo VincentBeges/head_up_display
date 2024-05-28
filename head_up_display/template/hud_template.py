@@ -1,6 +1,7 @@
 from head_up_display.template_elements import base_element
 import string
-
+import json
+from collections import OrderedDict
 
 class HudTemplate(object):
     """ Represent a template used to generate head up display over a media.
@@ -29,7 +30,24 @@ class HudTemplate(object):
     @classmethod
     def from_template_json_file(cls):
         # TODO: create method to read template from a json file
+        # TODO: create an object to get the correct template element using the type
         pass
+
+    def export_template_to_json_file(self, json_file: str) -> None:
+        """ Export current template as a json file
+
+        :param json_file: json filepath to export
+        """
+        json_template_list = []
+
+        for template_element in self.template_elements:
+            json_template_list.append(template_element.dict())
+
+        with open(json_file, 'w+', encoding='utf-8') as stream:
+            json.dump(json_template_list, stream, ensure_ascii=False, indent=4)
+
+        print(f'Dumped template data into:\n'
+              f'{json_file}')
 
     def add_template_element(self, element: base_element.TemplateElement):
         """ Add given element in the template
@@ -178,4 +196,8 @@ if __name__ == '__main__':
     text_elements_data = {'foo': 'Hello fools'}
 
     template = HudTemplate(template_elements=[text])
-    print(template.get_filter_complex_content(text_elements_data=text_elements_data))
+    # print(template.get_filter_complex_content(text_elements_data=text_elements_data))
+    import os
+    example_directory_path = os.path.realpath(os.path.join(os.path.dirname(__file__), '..', '..', 'examples'))
+    json_file_example = os.path.join(example_directory_path, 'hud_template.json')
+    template.export_template_to_json_file(json_file_example)

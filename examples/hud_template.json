@@ -1,0 +1,17 @@
+[
+    {
+        "horizontal_position": "center",
+        "vertical_position": "center",
+        "horizontal_margin": 10.0,
+        "vertical_margin": 20.0,
+        "type": "text",
+        "value": "",
+        "color": "black",
+        "font_size": 0,
+        "police_file": "/Windows/fonts/arial.ttf",
+        "bold": false,
+        "underline": false,
+        "italic": false,
+        "text_id": "foo"
+    }
+]

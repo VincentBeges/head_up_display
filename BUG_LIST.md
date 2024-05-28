@@ -1,3 +1,9 @@
+## Feature list
+- Be able to write or load HUD from a JSON file
+- Test a HudTemplate with no input
+- Adding unit tests
+- Adding integration tests
+
 ## Bug list
 
 - In text auto resize : Not fit perfectly for uppercase text
