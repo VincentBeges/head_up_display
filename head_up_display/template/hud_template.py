@@ -23,6 +23,9 @@ class HudTemplate(object):
         """
         self.template_elements = template_elements
 
+        #TODO: additional inputs property
+        #TODO: complex filter parts property
+
     @classmethod
     def from_template_json_file(cls):
         # TODO: create method to read template from a json file
@@ -41,19 +44,18 @@ class HudTemplate(object):
 
     def resize_elements_from_black_bar_size(self,
                                             black_bar_height: int,
-                                            margin: float = 10.0,
                                             override_existing_values: bool = True,
                                             ):
         """ Update the font_size of any text element (text, datetime, frame, ...) to fit in the black bars.
         Result will be:   black bar height size - margin in percent
 
         :param black_bar_height: The black bar height used in resize calcul
-        :param margin: A margin in percent. 10% -> will reduce text size of 10%
         :param override_existing_values: True to override any font_size existing value. False if you want to resize
             font_size only if existing value is 0
         """
-        # 1 point = 1.333333 pixel
-        point_pixel_ratio = 1.333333
+        # 1 point = 1.07 pixel
+        # Note that this value is coming from tests to have the text fitting in the black bar
+        pixel_point_ratio = 1.07
 
         for element in self.template_elements:
 
@@ -66,8 +68,20 @@ class HudTemplate(object):
             if not override_existing_values and size > 0:
                 continue
 
-            new_size_value = (black_bar_height * point_pixel_ratio) - (black_bar_height * margin / 100)
-            setattr(element, 'font_size', new_size_value)
+            margin = element.vertical_margin
+
+            # Update the font size based on black bar height and margin
+            new_size_value_px = black_bar_height - (black_bar_height * (2 * margin) / 100)
+            new_size_value_pt = new_size_value_px * pixel_point_ratio
+
+            setattr(element, 'font_size', new_size_value_pt)
+
+            # Update the vertical margin (will be based on the text size but text has been resized so margin
+            # should be)
+            resize_ratio = black_bar_height / new_size_value_px
+            new_vertical_margin = margin * resize_ratio
+
+            setattr(element, 'vertical_margin', new_vertical_margin)
 
     def get_filter_complex_content(self, text_elements_data: dict = None) -> str:
         """ Get the filter complex string to use in ffmpeg content.
@@ -76,7 +90,8 @@ class HudTemplate(object):
         ..note::
             Note about the source and destination groups.
             In FFMPEG filter_complex, you have multiple following filters to execute. For each filter (except first and
-            last one) you have to define the name of the source input group used and the name of the destination output.
+            last one) you have to define the name of the source input group used and the name of the destination output
+            group.
 
             We use simple alphabetical letters to do it:
             -filter_complex "first filter [a];[a] second filter [b];[b] third and last filter"
@@ -93,6 +108,7 @@ class HudTemplate(object):
 
         i = -1
         max_i = len(self.template_elements)
+        # Add each hud element into the command list
         for filter_element in self.template_elements:
 
             # For text elements using dynamic values input
@@ -111,7 +127,13 @@ class HudTemplate(object):
             else:
                 group_suffix = f'[{self.FILTERS_INCREMENT[i + 1]}]'
 
-            filters.append(f'{group_prefix}{filter_element.get_filter()}{group_suffix}')
+            # If element is about adding additional image in overlay (see ImageElement)
+            if hasattr(filter_element, '_image_id'):
+                filters.append(f'{group_prefix}[{filter_element._image_id}:v]{filter_element.get_filter()}{group_suffix}')
+
+            # Any other element
+            else:
+                filters.append(f'{group_prefix}{filter_element.get_filter()}{group_suffix}')
 
             i += 1
 
@@ -125,6 +147,29 @@ class HudTemplate(object):
         """
         return self.FILTER_COMPLEX.format(
             filters=self.get_filter_complex_content(text_elements_data=text_elements_data))
+
+    def get_additional_inputs(self) -> list[str]:
+        """ Get the list of all inputs to use in command. First one is the main media, other inputs will only add
+        image in overlay (no audio)
+
+        :return: list of inputs to use
+        """
+
+        inputs = []
+        input_number = 0
+
+        for filter_element in self.template_elements:
+
+            # Filter out non ImageElement objects
+            if not hasattr(filter_element, 'image_path'):
+                continue
+            inputs.append(getattr(filter_element, 'image_path'))
+
+            # Update the input number id. In the command we may have multiple inputs, this is used to differentiate them
+            input_number += 1
+            filter_element._image_id = input_number
+
+        return inputs
 
 
 if __name__ == '__main__':

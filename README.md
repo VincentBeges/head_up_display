@@ -4,6 +4,9 @@ A simple tool to create head up displays over media using FFMPEG.
 The main idea of this tool is to stay pretty simple and limited. For more advanced
 overlay creation, FFMPEG is here.
 
+## Features
+
+
 ## Tool development
 Tool should be able to:
 - [x] generate HUD over a movie (keeping codec and quality)
@@ -29,6 +32,23 @@ Tool should be able to:
 Tool structure should be:
 - [ ] HUD and template are used to define what we will see in overlay
 - [ ] Generator settings are used to process source media before applying the HUD
+
+## Tool Architecture
+Generate a schema explaining structure with automatic tool
+
+- FFMPEGWrapper
+- HudGenerator
+- Hud template
+- Template elements
+   - ElementPosition
+      - TemplateElement
+         - BaseTextElement
+            - TextElement
+            - FrameElement
+            - TimecodeElement
+            - FilepathElement
+            - DatetimeElement
+         - ImageElement
 
 
 ### Generate "empty" media for tests purpose

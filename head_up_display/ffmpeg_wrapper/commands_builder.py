@@ -25,7 +25,7 @@ class FFMPEGCommandsBuilder(object):
         return ' '.join(args)
 
     def get_command_to_create_hud_using_filters(self,
-                                                input_file: str,
+                                                input_files: list[str],
                                                 output_file: str,
                                                 filters: str
                                                 ) -> str:
@@ -35,16 +35,17 @@ class FFMPEGCommandsBuilder(object):
             The function name could be more generic but I wanted a precise name to know which function we use to
             get the ffmpeg command to create hud
 
-        :param input_file: input file to process
+        :param input_files: list of input files to process. First one the the background element.
         :param output_file: output file to save media with hud
         :param filters: complex filters used to generate the hud (coming from HudTemplate object)
         :return: The ffmpeg command ready to execute
         """
+
         return self._build_command(
             self.ffmpeg,
             self.override_files,
             self.hide_banner,
-            self.add_input.format(input_file),
+            *[self.add_input.format(input_file) for input_file in input_files],
             self.complex_filters.format(filters),
             self.output.format(output_file)
         )

@@ -29,8 +29,8 @@ class ElementPosition(BaseModel):
 
     horizontal_position: Union[str, int] = Field(default='center', validate_default=True)
     vertical_position: Union[str, int] = Field(default='center', validate_default=True)
-    horizontal_margin: int = 10  # In % of the overlay width
-    vertical_margin: int = 20  # In % of the overlay height
+    horizontal_margin: float = 10.0  # In % of the overlay width
+    vertical_margin: float = 20.0  # In % of the overlay height
 
     #TODO: could be nice to ajust position in pixel like top - 20px
 
@@ -139,7 +139,7 @@ class ElementPosition(BaseModel):
             if self.vertical_position == self._BOTTOM:
                 y = f'main_h-{self._OVERLAY_H}-({self._OVERLAY_H}*{self.vertical_margin}/100)'
             if self.vertical_position == self._CENTER:
-                y = 'main_h/2'
+                y = f'main_h/2-({self._OVERLAY_H}/2)'
 
         # Getting the filter using x and y value
         return f'x={x}:y={y}'
@@ -151,7 +151,10 @@ class TemplateElement(ElementPosition, abc.ABC):
     # Element type (text, date, frame, etc)
     type: str
     # Element value. Set by user (text, etc) or automatic process (date, frame, etc)
-    value: str
+    value: str  #TODO: only in text element
+
+    #TODO: add size ? used everywhere in any case. Use int, float or str (%). Used for font_size, image_size, etc
+    # <0 means automatic resize
 
     def __repr__(self):
         return f'<TemplateElement:{self.type}: "{self.value}">'
@@ -168,4 +171,3 @@ class TemplateElement(ElementPosition, abc.ABC):
 
 if __name__ == '__main__':
     position = ElementPosition(horizontal_position='center')
-    element = TemplateElement()

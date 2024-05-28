@@ -18,11 +18,10 @@ class GenerationConfig(BaseModel):
     black_bar_height: Union[int, str] = 20  # Fixed int pixel size or string percent size
 
     # Configuration to scale all elements to fit in the black bars
-    scale_everything: bool = True
-    override_existing_size_values: bool = True  # False will override values only if font_size is 0
+    auto_scale_hud_elements: bool = True
+    override_existing_size_values: bool = False  # False will override size values only if font_size is 0
 
     # Configuration to store the command in a file
     ffmpeg_command_as_file: bool = False  # True to write it in a pickle file and read it, easiest debug
     #TODO: make this feature
-
     #TODO: we need to be able to setup it for a full projet / environment

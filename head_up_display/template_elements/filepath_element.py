@@ -12,10 +12,10 @@ class FilepathElement(text_element.BaseTextElement):
     """
     type: str = 'filename'
     value: str = ''
-    # We use the
+    # We use a specific text id for this one to set value with generated input filepath or filename
     text_id: str = constants.OUTPUT_PATH_TEXT_ID
 
-    # TODO: argument to reduce length of path value
+    max_length: int = 0  # Used to reduce the filepath string length
 
     @field_validator('type')
     def validate_type(cls, value, info: ValidationInfo) -> str:
@@ -37,6 +37,30 @@ class FilepathElement(text_element.BaseTextElement):
 
         return value
 
+    @staticmethod
+    def _reduce_length(text: str, max_length: int = 10, separator: str = '...'):
+        """ Reduce given text by giving max_length + separator
+
+        :param text: text to reduce
+        :param max_length: max character length to keep
+        :param separator: separator characters to replace the removed part
+        :return: reduced text
+        """
+        #TODO: max_length should include the separator inside ?
+        new_text = ''
+        text_length = len(text)
+        split_length = max_length/2
+
+        for i, char in enumerate(text, start=0):
+            if i < split_length or i >= (text_length - split_length):
+                new_text += char
+            elif i == split_length:
+                new_text += separator
+            else:
+                continue
+
+        return new_text
+
     def get_filter(self):
         """ Get filter to write path in HUD """
 
@@ -47,5 +71,9 @@ class FilepathElement(text_element.BaseTextElement):
             text = os.path.basename(self.value)
         else:
             text = self.value
+
+        # Reduce the path if necessary
+        if self.max_length > 0:
+            text = self._reduce_length(text, max_length=self.max_length)
 
         return self._get_draw_text(text_value=text)

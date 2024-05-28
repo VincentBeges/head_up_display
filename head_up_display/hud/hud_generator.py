@@ -58,15 +58,18 @@ class HudGenerator(object):
                 self.hud_template.template_elements.insert(0, resize_and_pad_filter) #TODO: correct the type
 
         ## 3 Resize all elements to fit in the black bars
-        if self.generation_config.scale_everything:
+        if self.generation_config.auto_scale_hud_elements:
             self.hud_template.resize_elements_from_black_bar_size(
                 black_bar_height=self.generation_config.black_bar_height,
-                margin=10,
                 override_existing_values=self.generation_config.override_existing_size_values,
             )
 
+        ## 4 Prepare the input files. First one is the main media, any other are additional image added in overlay
+        input_files = [source_file]
+        input_files.extend(self.hud_template.get_additional_inputs())
+
         command = self.ffmpeg_commands.get_command_to_create_hud_using_filters(
-            input_file=source_file,
+            input_files=input_files,
             output_file=destination_file,
             filters=self.hud_template.get_filter_complex_content(text_elements_data=text_elements_data))
 
