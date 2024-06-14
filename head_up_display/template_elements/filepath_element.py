@@ -67,7 +67,7 @@ class FilepathElement(text_element.BaseTextElement):
         if not self.value:
             raise RuntimeError('Failed to get the filepath filter value')
 
-        if self.type is 'filename':
+        if self.type == 'filename':
             text = os.path.basename(self.value)
         else:
             text = self.value
