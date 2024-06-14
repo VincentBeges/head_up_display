@@ -93,8 +93,28 @@ class TextElement(BaseTextElement):
 
 
 if __name__ == '__main__':
-    text_filter = TextElement(value='this is my text', text_id='foo')
+    text_filter = TextElement(value='this is my text', text_id='foo', type='text')
     text_filter.horizontal_position = 'right'
     print(text_filter.get_filter())
     print(text_filter.__repr__())
+
+    data = {
+        "horizontal_position": "center",
+        "vertical_position": "center",
+        "horizontal_margin": 10.0,
+        "vertical_margin": 20.0,
+        "type": "text",
+        "value": "",
+        "color": "black",
+        "font_size": 0,
+        "police_file": "/Windows/fonts/arial.ttf",
+        "bold": False,
+        "underline": False,
+        "italic": False,
+        "text_id": "foo",
+    }
+
+    text_element = TextElement.from_dict(data)
+    print(text_element)
+    print(text_element.model_fields.get('type'))
 

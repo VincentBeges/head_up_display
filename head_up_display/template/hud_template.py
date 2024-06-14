@@ -1,4 +1,5 @@
 from head_up_display.template_elements import base_element
+from head_up_display.template.all_template_elements import TemplateElements
 import string
 import json
 from collections import OrderedDict
@@ -28,10 +29,18 @@ class HudTemplate(object):
         #TODO: complex filter parts property
 
     @classmethod
-    def from_template_json_file(cls):
-        # TODO: create method to read template from a json file
-        # TODO: create an object to get the correct template element using the type
-        pass
+    def from_template_json_file(cls, json_file: str) -> 'HudTemplate':
+        """ Get HudTemplate from a json file
+
+        :param json_file: json file with template data inside (a list of dict. Each dict is a template element)
+        :return: class instance
+        """
+        with open(json_file, 'r') as stream:
+            template_list = json.load(stream)
+
+        template_elements = list(TemplateElements.from_json_data_list(json_data_list=template_list))
+
+        return cls(template_elements=template_elements)
 
     def export_template_to_json_file(self, json_file: str) -> None:
         """ Export current template as a json file
@@ -191,13 +200,16 @@ class HudTemplate(object):
 
 
 if __name__ == '__main__':
-    from head_up_display.template_elements import text_element
-    text = text_element.TextElement(value='', text_id='foo')
-    text_elements_data = {'foo': 'Hello fools'}
+    # from head_up_display.template_elements import text_element
+    # text = text_element.TextElement(value='', text_id='foo')
+    # text_elements_data = {'foo': 'Hello fools'}
+    #
+    # template = HudTemplate(template_elements=[text])
+    # # print(template.get_filter_complex_content(text_elements_data=text_elements_data))
+    # import os
+    # example_directory_path = os.path.realpath(os.path.join(os.path.dirname(__file__), '..', '..', 'examples'))
+    # json_file_example = os.path.join(example_directory_path, 'hud_template.json')
+    # template.export_template_to_json_file(json_file_example)
 
-    template = HudTemplate(template_elements=[text])
-    # print(template.get_filter_complex_content(text_elements_data=text_elements_data))
-    import os
-    example_directory_path = os.path.realpath(os.path.join(os.path.dirname(__file__), '..', '..', 'examples'))
-    json_file_example = os.path.join(example_directory_path, 'hud_template.json')
-    template.export_template_to_json_file(json_file_example)
+    test_file = r'C:\Users\Vincent\Documents\PycharmProjects\head_up_display\examples\hud_template.json'
+    template = HudTemplate.from_template_json_file(json_file=test_file)
