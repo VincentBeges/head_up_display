@@ -1,16 +1,14 @@
-from pydantic import computed_field, ValidationInfo
+from pydantic import computed_field
 from head_up_display.template_elements import text_element
-from pydantic import field_validator, Field
 from datetime import datetime
+from typing import Literal
 
-
-VALID_DATETIME_TYPES = ('datetime', 'date', 'time')
 
 class DatetimeElement(text_element.BaseTextElement):
     """ Represent a Datetime in the HUD
     Can be date or time or date + time
     """
-    type: str = 'datetime'  # See VALID_DATETIME_TYPES
+    type: Literal['datetime', 'date', 'time'] = 'datetime'
 
     date_time_strftime: str = '%Y-%m-%d %H:%M:%S'
     date_strftime: str = '%Y-%m-%d'
@@ -36,13 +34,6 @@ class DatetimeElement(text_element.BaseTextElement):
             return self.now.strftime(self.time_strftime)
 
         raise RuntimeError('Failed to get date and/or time as string. Wrong type input')
-
-    @field_validator('type')
-    def validate_type(cls, value, info: ValidationInfo) -> str:
-        """ Ensure we have a valid type in input """
-        if value not in VALID_DATETIME_TYPES:
-            raise TypeError(f'Given DatetimeElement has wrong type "{value}" should be any of {VALID_DATETIME_TYPES}')
-        return value
 
     def get_filter(self):
         """ Get the text filter used in complex filter """

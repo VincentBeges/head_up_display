@@ -153,9 +153,6 @@ class TemplateElement(ElementPosition, abc.ABC):
     # Element value. Set by user (text, etc) or automatic process (date, frame, etc)
     value: str  #TODO: only in text element
 
-    #TODO: add size ? used everywhere in any case. Use int, float or str (%). Used for font_size, image_size, etc
-    # <0 means automatic resize
-
     def __repr__(self):
         return f'<TemplateElement:{self.type}: "{self.value}">'
 
@@ -167,6 +164,18 @@ class TemplateElement(ElementPosition, abc.ABC):
         >> drawtext=fontfile=/Windows/fonts/arial.ttf:text=\'Helloworld\':fontcolor=white:fontsize=24:x=(w-text_w)/2:y=8
         """
         pass
+
+    @classmethod
+    def from_dict(cls, data: dict):
+        """ Get element object from a dict. Used to load HUD config from json file
+
+        :param data: template element data
+        """
+        element_type = data.get('type')
+        if not element_type:
+            raise ValueError('Given dict used to load element has no type value')
+
+        return cls(**data)
 
 
 if __name__ == '__main__':

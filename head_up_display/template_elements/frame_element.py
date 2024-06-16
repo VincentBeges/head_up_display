@@ -1,5 +1,6 @@
 from head_up_display.template_elements import text_element
-from pydantic import Field, PrivateAttr, computed_field
+from pydantic import PrivateAttr, computed_field
+from typing import Literal
 
 
 class FrameElement(text_element.BaseTextElement):
@@ -7,7 +8,7 @@ class FrameElement(text_element.BaseTextElement):
 
     It will print the frame number of each frame
     """
-    type: str = Field(default='frame', frozen=True)
+    type: Literal['frame'] = 'frame'
     value: str = r'Frame\: '  # This string will be added before the frame
     start_number: int = 0
     # Number of digit for the written frame number

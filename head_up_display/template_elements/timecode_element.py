@@ -1,5 +1,6 @@
 from head_up_display.template_elements import text_element
 from pydantic import Field, computed_field
+from typing import Literal
 
 
 class TimecodeElement(text_element.BaseTextElement):
@@ -7,7 +8,7 @@ class TimecodeElement(text_element.BaseTextElement):
 
     https://ffmpeg.org/ffmpeg-filters.html#toc-Syntax
     """
-    type: str = Field(default='timecode', frozen=True)
+    type: Literal['timecode'] = 'timecode'
     value: str = r''  # This string will be added before the timecode
 
     # Custom time format, see https://ffmpeg.org/ffmpeg-filters.html#Text-expansion

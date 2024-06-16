@@ -1,10 +1,11 @@
 from head_up_display.template_elements import base_element
-from pydantic import Field, field_validator, ValidationInfo
+from pydantic import field_validator, ValidationInfo
+from typing import Literal
 import os
 
 
 class ImageElement(base_element.TemplateElement):
-    type: str = Field(default='image', frozen=True)
+    type: Literal['image'] = 'image'
     value: str = None
     image_path: str
 

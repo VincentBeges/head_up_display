@@ -2,27 +2,19 @@ from head_up_display import constants
 from head_up_display.template_elements import text_element
 from pydantic import field_validator, ValidationInfo
 import os
-
-VALID_FILENAME_TYPES = ('filename', 'filepath')
+from typing import Literal
 
 
 class FilepathElement(text_element.BaseTextElement):
     """ Represent filepath in the HUD
     Can be filepath or filename
     """
-    type: str = 'filename'
+    type: Literal['filename', 'filepath'] = 'filepath'
     value: str = ''
     # We use a specific text id for this one to set value with generated input filepath or filename
     text_id: str = constants.OUTPUT_PATH_TEXT_ID
 
     max_length: int = 0  # Used to reduce the filepath string length
-
-    @field_validator('type')
-    def validate_type(cls, value, info: ValidationInfo) -> str:
-        """ Ensure we have a valid type in input """
-        if value not in VALID_FILENAME_TYPES:
-            raise TypeError(f'Given FilepathElement has wrong type "{value}" should be any of {VALID_FILENAME_TYPES}')
-        return value
 
     @field_validator('value')
     def validate_value_as_path(cls, value, info: ValidationInfo) -> str:

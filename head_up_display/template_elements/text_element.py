@@ -1,6 +1,6 @@
 from head_up_display.template_elements import base_element
-from pydantic import Field, model_validator, field_validator, ValidationInfo
-from typing import Union
+from pydantic import model_validator, field_validator, ValidationInfo
+from typing import Union, Literal
 import copy
 import re
 
@@ -12,7 +12,7 @@ SEARCH_SEMI_COLON = re.compile(r'''(?<!\\);''')
 class BaseTextElement(base_element.TemplateElement):
     """ Base object for all sub object printing text in the end """
 
-    type: str = Field(default='base_text', frozen=True)
+    type: Literal['base_text'] = 'base_text'
     value: str
 
     color: str = 'black'
@@ -76,7 +76,7 @@ class TextElement(BaseTextElement):
         "text_id" is optional if you just want to have a fixed string value
     """
 
-    type: str = Field(default='text', frozen=True)
+    type: Literal['text'] = 'text'
     text_id: str = ''  # Optional. See docstring.
     value: str = ''
 
