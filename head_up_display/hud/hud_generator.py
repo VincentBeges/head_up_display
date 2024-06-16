@@ -1,9 +1,12 @@
+import os
+
 from head_up_display import constants
 from head_up_display.ffmpeg_wrapper import commands_builder
 from head_up_display.hud.generation_config import GenerationConfig
 from head_up_display.template.hud_template import HudTemplate
 from head_up_display.template.resize_filter import ResizeAndPadFilter
 import subprocess
+import tempfile
 
 
 class HudGenerator(object):
@@ -25,9 +28,54 @@ class HudGenerator(object):
         self.generation_config = generation_config or GenerationConfig()
 
     @classmethod
-    def test_given_hud_template(cls, hud_template: HudTemplate, text_elements_data: dict = None):
-        #TODO: test a given template by generating an empty image with given hud data. The ID are used as input
-        pass
+    def test_given_hud_template(cls,
+                                hud_template: HudTemplate,
+                                generation_config: GenerationConfig = None,
+                                text_elements_data: dict = None,
+                                output_file: str = None,
+                                ):
+        """ Test the given HudTemplate object with a generated media.
+
+        :param hud_template: HudTemplate object to test
+        :param generation_config: GenerationConfig object to used
+        :param text_elements_data:
+        :param output_file:
+        :return:
+        """
+
+        output_file = output_file or tempfile.NamedTemporaryFile(mode='w+', prefix='test_movie_input', suffix='.mp4').name
+
+        #TODO: source media size ? to test the resize
+
+        command = f'ffmpeg -f lavfi -i testsrc -t 30 -pix_fmt yuv420p {output_file}'
+        os.system(command=command)
+
+        if not os.path.exists(output_file):
+            raise OSError(f'Failed to create a test movie to apply HUD over:\n {output_file}')
+
+        generator = cls(hud_template=hud_template,
+                        generation_config=generation_config,
+                        )
+        generator.generate(source_file=output_file,
+                           destination_file=output_file,
+                           text_elements_data=text_elements_data,
+                           dry_run=False,
+                           )
+        print('## Generated a test media for hud template ##')
+        print(output_file)
+
+    def test_given_hud_template_from_file(self,
+                                          hud_template_filepath:str,
+                                          generation_config: GenerationConfig = None,
+                                          text_elements_data: dict = None,
+                                          output_file: str = None,
+                                          ):
+        hud_template = HudTemplate.from_template_json_file(json_file=hud_template_filepath)
+        return self.test_given_hud_template(hud_template=hud_template,
+                                            generation_config=generation_config,
+                                            text_elements_data=text_elements_data,
+                                            output_file=output_file,
+                                            )
 
     def generate(self,
                  source_file: str,
