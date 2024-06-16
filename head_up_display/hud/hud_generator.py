@@ -37,45 +37,60 @@ class HudGenerator(object):
         """ Test the given HudTemplate object with a generated media.
 
         :param hud_template: HudTemplate object to test
-        :param generation_config: GenerationConfig object to used
-        :param text_elements_data:
-        :param output_file:
-        :return:
+        :param generation_config: GenerationConfig object to used to modify input file
+        :param text_elements_data: dynamic data to use with template
+        :param output_file: A filepath for the exported test file
         """
 
-        output_file = output_file or tempfile.NamedTemporaryFile(mode='w+', prefix='test_movie_input', suffix='.mp4').name
+        input_file = tempfile.NamedTemporaryFile(mode='w+', prefix='test_movie_input', suffix='.mp4').name
+        output_file = output_file or input_file.replace('input', 'output')
 
         #TODO: source media size ? to test the resize
 
-        command = f'ffmpeg -f lavfi -i testsrc -t 30 -pix_fmt yuv420p {output_file}'
+        command = f'ffmpeg -f lavfi -i testsrc -t 30 -pix_fmt yuv420p {input_file}'
         os.system(command=command)
 
-        if not os.path.exists(output_file):
-            raise OSError(f'Failed to create a test movie to apply HUD over:\n {output_file}')
+        if not os.path.exists(input_file):
+            raise OSError(f'Failed to create a test movie to apply HUD over:\n {input_file}')
 
         generator = cls(hud_template=hud_template,
                         generation_config=generation_config,
                         )
-        generator.generate(source_file=output_file,
+        generator.generate(source_file=input_file,
                            destination_file=output_file,
                            text_elements_data=text_elements_data,
                            dry_run=False,
                            )
+        try:
+            os.remove(input_file)
+        except OSError:
+            print(f'Failed to remove temporary generated source file. Not a big deal\n {input_file}')
+
         print('## Generated a test media for hud template ##')
         print(output_file)
 
-    def test_given_hud_template_from_file(self,
+    @classmethod
+    def test_given_hud_template_from_file(cls,
                                           hud_template_filepath:str,
                                           generation_config: GenerationConfig = None,
                                           text_elements_data: dict = None,
                                           output_file: str = None,
                                           ):
+        """ Test the given template file without giving input
+
+        :param hud_template_filepath: template as a json file
+        :param generation_config: GenerationConfig object to used to modify input file
+        :param text_elements_data: dynamic data to use with template
+        :param output_file: A filepath for the exported test file
+        """
+        # Load template
         hud_template = HudTemplate.from_template_json_file(json_file=hud_template_filepath)
-        return self.test_given_hud_template(hud_template=hud_template,
-                                            generation_config=generation_config,
-                                            text_elements_data=text_elements_data,
-                                            output_file=output_file,
-                                            )
+        # Test template
+        cls.test_given_hud_template(hud_template=hud_template,
+                                    generation_config=generation_config,
+                                    text_elements_data=text_elements_data,
+                                    output_file=output_file,
+                                    )
 
     def generate(self,
                  source_file: str,
@@ -129,13 +144,6 @@ class HudGenerator(object):
         else:
             res = subprocess.call(command, shell=True)
             print(command)
-
-
-if __name__ == '__main__':
-
-    """
-    On a tel HUD
-    Quand on process on lui dit, c'est tel HUD et voila la conf a utiliser (do_resize, etc)
-    Permet de batch process, permet de process un meme hud sur differents media        
-    Permet de process pour differentes conf (projets)
-    """
+            if res != 0:
+                raise RuntimeError('Failed to process HUD generation')
+            print('## Processed HUD generation ##')
