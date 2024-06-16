@@ -151,7 +151,9 @@ class TemplateElement(ElementPosition, abc.ABC):
     # Element type (text, date, frame, etc)
     type: str
     # Element value. Set by user (text, etc) or automatic process (date, frame, etc)
-    value: str  #TODO: only in text element
+    value: str
+
+    model_config = ConfigDict(extra='forbid')
 
     def __repr__(self):
         return f'<TemplateElement:{self.type}: "{self.value}">'
