@@ -1,3 +1,7 @@
+## HUD GENERATION ##
+GENERATION_CONFIG_ENV_PREFIX = 'hud_generation_config__'
+
+## HUD TEMPLATES ##
 TEXT_ELEMENT_TYPE = 'text'
 FILEPATH_ELEMENT_TYPE = 'filepath'
 FILENAME_ELEMENT_TYPE = 'filename'
