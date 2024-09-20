@@ -1,19 +1,74 @@
 # Head up display generator
 This is a simple tool to create head up displays (HUD) over media using FFMPEG.
-Adding HUD is a process used in movie, animation or VFX industries to apply in overlay of an input media some visual 
+
+ADD IMAGE EXAMPLES
+
+Adding a head up display is a process used in movie/animation/VFX industries to apply in overlay of an input media some visual 
 data (text, frame number, logo, etc), mostly for reviewing purpose.
 
-The HUD generation is done using a template and an input media.
+# Table of contents
+
+## Tool Features
+
+The HUD generator tool can be used to :
+- modify the input media
+  - resize the media
+  - add black bar on top and bottom
+- add data in overlay
+- batch process
+  - create templates
+
+## Installation
+
+### Use custom ffmpeg path
+Setup `FFMPEG_PATH` environment variable
+
+## Dependencies
+
+## Simple usage
+
+## Advanced usage
+
+### Hud generation
+Automatic size scaling
+
+#### Generation configuration defined per project / environment
+The GenerationConfig class is based on pydantic Settings Management : \
+https://docs.pydantic.dev/latest/concepts/pydantic_settings/
+
+The settings will be loaded from environment variables through `prefix` + `class attribute`.
+The default prefix name is defined in `head_up_display/constants.py` file.
+```python
+from head_up_display.hud.generation_config import GenerationConfig
+import os
+
+# Example to set up a specific value in the environment variable
+os.environ['hud_generation_config__do_resize'] = 'False'
+os.environ['hud_generation_config__resize_width'] = '1200'
+
+# Init the configuration will load environment variables values if defined
+# Default value will be used if the environment variable is not set
+config = GenerationConfig()
+
+print(config.model_dump())
+# >>> {'do_resize': False, 'resize_width': 1200, 'resize_height': 1920, 'add_black_bar': True, 'black_bar_height': 20, 'auto_scale_hud_elements': True, 'override_existing_size_values': False, 'ffmpeg_command_as_file': False}
+```
+Note that the environment variable type is automatically converted (from string to bool, int, etc)
+
+/
+
+
+
+~~The HUD generation is done using a template and an input media.
 It can:
 - process modification on input media
 - add static/dynamic overlay data using a template
 
 The templates are used to define what we want to add in overlay. It can be defined by:
 - Python objects
-- json files
+- json files~~
 
 
-## Tool Features
 
 The HUD generation is divided in two step:
 - Process the source media
@@ -42,32 +97,10 @@ Each HUD element size can be defined
 - Automatically to fit in the black bar size (with a margin)
 - Manually in point size
 
+## How to use tool
 
-## Tool development
-Tool should be able to:
-- [x] generate HUD over a movie (keeping codec and quality)
-- [ ] generate HUD over an image (Use Path or File object ?)
-- [ ] generate HUD over a sequence
-- [x] resize source media and add black bar on top and bottom
-- [w] add hud elements using templates defined in a json file or with python classes
--  elements we can use in templates are:
-    - [x] text
-    - [x] date/time
-    - [x] filename / filepath
-    - [x] frame
-    - [x] timecode
-    - [w] another image (logo or other) 
-- [x] text element can be filled dynamically using an ID in the template and a dict in the generation method
-- [ ] test all templates without giving input
-- [ ] unit testing of all objects
-- [ ] accessible with pip install
-- [ ] documentation for all elements + examples
-- [ ] fill the constants file to make it easy to update
-- [ ] store the ffmpeg command in a file
+## How to create HUD template
 
-Tool structure should be:
-- [ ] HUD and template are used to define what we will see in overlay
-- [ ] Generator settings are used to process source media before applying the HUD
 
 ## Tool Architecture
 Generate a schema explaining structure with automatic tool
@@ -93,6 +126,9 @@ Test color bars \
 
 Test red media \
 `ffmpeg -f lavfi -i color=color=red -t 30 red.mp4`
+
+Extract a single frame from a media \
+`ffmpeg -i input.mp4 -frames:v 1 first.jpg`
 
 ## Requires
 - ffmpeg with fontconfig setup at build
