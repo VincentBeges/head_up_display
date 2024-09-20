@@ -2,16 +2,11 @@ from dataclasses import dataclass
 import os
 
 
-# cmd = f'ffmpeg -y -hide_banner -i {source_file} -q:v 1 -qmin 1 -filter_complex ' \
-#       f'"scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:{1080 + (BLACK_BAR_HEIGHT * 2)}
-#       :(ow-iw)/2:(oh-ih)/2,setsar=1" ' \
-#       f'{destination_file}'
-
-
 @dataclass
 class FFMPEGCommandsBuilder(object):
     """ Storing ffmpeg commands elements """
-    ffmpeg: str = os.getenv('FFMPEG_PATH', 'ffmpeg')  #TODO: to explain in documentation
+
+    ffmpeg: str = os.getenv('FFMPEG_PATH', 'ffmpeg')
     override_files: str = '-y'
     hide_banner: str = '-hide_banner'
     add_input: str = '-i {0}'
@@ -20,22 +15,18 @@ class FFMPEGCommandsBuilder(object):
     output: str = '{0}'
 
     @staticmethod
-    def _build_command(*args):
+    def _build_command(*args) -> str:
         """ Build command with given elements (current class attributes) """
         return ' '.join(args)
 
     def get_command_to_create_hud_using_filters(self,
                                                 input_files: list[str],
                                                 output_file: str,
-                                                filters: str
+                                                filters: str,
                                                 ) -> str:
-        """ Get the FFMPEG command used to create hud over a given media
+        """ Get the FFMPEG command used to create hud over a given media.
 
-        ..note::
-            The function name could be more generic but I wanted a precise name to know which function we use to
-            get the ffmpeg command to create hud
-
-        :param input_files: list of input files to process. First one the the background element.
+        :param input_files: list of input files to process. First one the background element.
         :param output_file: output file to save media with hud
         :param filters: complex filters used to generate the hud (coming from HudTemplate object)
         :return: The ffmpeg command ready to execute
