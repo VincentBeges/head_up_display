@@ -1,6 +1,7 @@
 from head_up_display import constants
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import Union
+from pprint import pprint
 import tempfile
 import os
 
@@ -32,6 +33,9 @@ class GenerationConfig(BaseSettings):
     ffmpeg_command_as_file: bool = False  # True to write it in a pickle file to execute command (to keep history)
     #TODO: make this feature
 
+    def print_settings(self):
+        """ Print the generation config settings (used in dryrun mode) """
+        pprint(self.model_dump())
 
 if __name__ == '__main__':
     # Example to override default value using environment variables
@@ -39,4 +43,4 @@ if __name__ == '__main__':
     os.environ['hud_generation_config__resize_width'] = '1200'
 
     config = GenerationConfig()
-    print(config.model_dump())
+    config.print_settings()

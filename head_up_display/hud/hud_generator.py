@@ -33,6 +33,8 @@ class HudGenerator(object):
                                 generation_config: GenerationConfig = None,
                                 text_elements_data: dict = None,
                                 output_file: str = None,
+                                source_width: int = 720,
+                                source_height: int = 480,
                                 ):
         """ Test the given HudTemplate object with a generated media.
 
@@ -40,14 +42,14 @@ class HudGenerator(object):
         :param generation_config: GenerationConfig object to used to modify input file
         :param text_elements_data: dynamic data to use with template
         :param output_file: A filepath for the exported test file
+        :param source_width: Size of the source media generated (used mainly to test the resize process)
+        :param source_height: Size of the source media generated (used mainly to test the resize process)
         """
 
         input_file = tempfile.NamedTemporaryFile(mode='w+', prefix='test_movie_input', suffix='.mp4').name
         output_file = output_file or input_file.replace('input', 'output')
 
-        #TODO: source media size ? to test the resize
-
-        command = f'ffmpeg -f lavfi -i testsrc -t 30 -pix_fmt yuv420p {input_file}'
+        command = f'ffmpeg -f lavfi -i testsrc -t 30 -s {source_width}x{source_height} -pix_fmt yuv420p {input_file}'
         os.system(command=command)
 
         if not os.path.exists(input_file):
@@ -116,9 +118,9 @@ class HudGenerator(object):
             resize_and_pad_filter = ResizeAndPadFilter.from_generation_config(generation_config=self.generation_config)
 
             if resize_and_pad_filter:
-                # The "from_generation_config" class method from ResizeAndPagFilter return None if we don't want to
+                # The "ResizeAndPagFilter.from_generation_config()" class method return None if we don't want to
                 # do_resize the media or add black bar. In this case we don't need to use it
-                self.hud_template.template_elements.insert(0, resize_and_pad_filter) #TODO: correct the type
+                self.hud_template.template_elements.insert(0, resize_and_pad_filter)
 
         ## 3 Resize all elements to fit in the black bars
         if self.generation_config.auto_scale_hud_elements:
@@ -139,7 +141,9 @@ class HudGenerator(object):
         if dry_run:
             print('Dry run generate HUD:')
             print(command)
-            #TODO: print generator settings
+
+            print('Generation settings:')
+            self.generation_config.print_settings()
 
         else:
             res = subprocess.call(command, shell=True)
