@@ -144,6 +144,15 @@ class HudGenerator(object):
         else:
             res = subprocess.call(command, shell=True)
             print(command)
+            if self.generation_config.ffmpeg_command_as_file:
+                command_file = tempfile.NamedTemporaryFile(dir=self.generation_config.temp_directory,
+                                                           prefix='hud_command_',
+                                                           suffix='.txt'
+                                                           )
+                with open(command_file.name, 'w') as stream:
+                    stream.write(command)
+                print(f'Written command in: {command_file.name}')
+
             if res != 0:
                 raise RuntimeError('Failed to process HUD generation')
             print('## Processed HUD generation ##')

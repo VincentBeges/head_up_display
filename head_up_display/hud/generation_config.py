@@ -1,6 +1,7 @@
 from head_up_display import constants
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import Union
+import tempfile
 import os
 
 
@@ -11,6 +12,8 @@ class GenerationConfig(BaseSettings):
     The way we process media before writing hud is defined in this class.
     """
     model_config = SettingsConfigDict(env_prefix=constants.GENERATION_CONFIG_ENV_PREFIX)
+
+    temp_directory: str = os.path.join(tempfile.gettempdir(), 'hud_generation')
 
     # Configuration to resize the input media
     do_resize: bool = True
