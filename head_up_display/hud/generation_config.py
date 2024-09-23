@@ -30,17 +30,8 @@ class GenerationConfig(BaseSettings):
     override_existing_size_values: bool = False  # False will override size values only if font_size is 0
 
     # Configuration to store the command in a file
-    ffmpeg_command_as_file: bool = False  # True to write it in a pickle file to execute command (to keep history)
-    #TODO: make this feature
+    ffmpeg_command_as_file: bool = False  # True to write the command in a file during hud generation
 
     def print_settings(self):
         """ Print the generation config settings (used in dryrun mode) """
         pprint(self.model_dump())
-
-if __name__ == '__main__':
-    # Example to override default value using environment variables
-    os.environ['hud_generation_config__do_resize'] = 'False'
-    os.environ['hud_generation_config__resize_width'] = '1200'
-
-    config = GenerationConfig()
-    config.print_settings()
