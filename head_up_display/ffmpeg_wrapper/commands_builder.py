@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from head_up_display import constants
 import os
 
 
@@ -6,7 +7,7 @@ import os
 class FFMPEGCommandsBuilder(object):
     """ Storing ffmpeg commands elements """
 
-    ffmpeg: str = os.getenv('FFMPEG_PATH', 'ffmpeg')
+    ffmpeg: str = os.getenv('FFMPEG_PATH', constants.FFMPEG_CMD)
     override_files: str = '-y'
     hide_banner: str = '-hide_banner'
     add_input: str = '-i {0}'
@@ -18,8 +19,9 @@ class FFMPEGCommandsBuilder(object):
     def _build_command(*args) -> str:
         """ Build command with given elements (current class attributes) """
         return ' '.join(args)
-
-    def get_command_to_create_hud_using_filters(self,
+    
+    @classmethod
+    def get_command_to_create_hud_using_filters(cls,
                                                 input_files: list[str],
                                                 output_file: str,
                                                 filters: str,
@@ -32,11 +34,11 @@ class FFMPEGCommandsBuilder(object):
         :return: The ffmpeg command ready to execute
         """
 
-        return self._build_command(
-            self.ffmpeg,
-            self.override_files,
-            self.hide_banner,
-            *[self.add_input.format(input_file) for input_file in input_files],
-            self.complex_filters.format(filters),
-            self.output.format(output_file)
+        return cls._build_command(
+            cls.ffmpeg,
+            cls.override_files,
+            cls.hide_banner,
+            *[cls.add_input.format(input_file) for input_file in input_files],
+            cls.complex_filters.format(filters),
+            cls.output.format(output_file)
         )
