@@ -1,12 +1,14 @@
-import os
-
 from head_up_display import constants
 from head_up_display.ffmpeg_wrapper import commands_builder
 from head_up_display.hud.generation_config import GenerationConfig
 from head_up_display.template.hud_template import HudTemplate
 from head_up_display.template.resize_filter import ResizeAndPadFilter
+import os
 import subprocess
 import tempfile
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class HudGenerator(object):
@@ -66,10 +68,10 @@ class HudGenerator(object):
         try:
             os.remove(input_file)
         except OSError:
-            print(f'Failed to remove temporary generated source file. Not a big deal\n {input_file}')
+            logger.error(f'Failed to remove temporary generated source file. Not a big deal\n {input_file}')
 
-        print('## Generated a test media for hud template ##')
-        print(output_file)
+        logger.info('## Generated a test media for hud template ##')
+        logger.info(output_file)
 
     @classmethod
     def test_given_hud_template_from_file(cls,
@@ -139,15 +141,15 @@ class HudGenerator(object):
             filters=self.hud_template.get_filter_complex_content(text_elements_data=text_elements_data))
 
         if dry_run:
-            print('Dry run generate HUD:')
-            print(command)
+            logger.info('Dry run generate HUD:')
+            logger.info(command)
 
-            print('Generation settings:')
+            logger.info('Generation settings:')
             self.generation_config.print_settings()
 
         else:
             res = subprocess.call(command, shell=True)
-            print(command)
+            logger.debug(command)
             if self.generation_config.ffmpeg_command_as_file:
                 command_file = tempfile.NamedTemporaryFile(dir=self.generation_config.temp_directory,
                                                            prefix='hud_command_',
@@ -155,8 +157,8 @@ class HudGenerator(object):
                                                            )
                 with open(command_file.name, 'w') as stream:
                     stream.write(command)
-                print(f'Written command in: {command_file.name}')
+                logger.info(f'Written command in: {command_file.name}')
 
             if res != 0:
                 raise RuntimeError('Failed to process HUD generation')
-            print('## Processed HUD generation ##')
+            logger.info('## Processed HUD generation ##')
