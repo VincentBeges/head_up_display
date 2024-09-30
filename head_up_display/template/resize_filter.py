@@ -80,7 +80,7 @@ class ResizeAndPadFilter(BaseModel):
     @classmethod
     def from_generation_config(cls, generation_config: GenerationConfig) -> Union['ResizeAndPadFilter', None]:
         """ Init current filter size from a generation config.
-        Note that it can returns None if the configuration does not requires to resize or add black bar.
+        Note that it can return None if the configuration does not require to resize or add black bar.
 
         :param generation_config: the GenerationConfig object used to process source media before adding hud
         :return: Current class or None
