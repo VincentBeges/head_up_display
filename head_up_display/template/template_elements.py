@@ -1,13 +1,12 @@
 from head_up_display.template_elements import datetime_element, filepath_element, frame_element, image_element, \
     text_element, timecode_element
-
 from dataclasses import dataclass
+
 
 @dataclass
 class TemplateElements:
     """ Storing all available elements """
 
-    #TODO: use constant to store types
     datetime: datetime_element.DatetimeElement = datetime_element.DatetimeElement
     date: datetime_element.DatetimeElement = datetime_element.DatetimeElement
     time: datetime_element.DatetimeElement = datetime_element.DatetimeElement
