@@ -1,3 +1,5 @@
+FFMPEG_CMD = 'ffmpeg'
+
 ## HUD GENERATION ##
 GENERATION_CONFIG_ENV_PREFIX = 'hud_generation_config__'
 
