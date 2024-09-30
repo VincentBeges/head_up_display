@@ -1,8 +1,11 @@
 from head_up_display.template_elements import base_element
-from head_up_display.template.all_template_elements import TemplateElements
+from head_up_display.template.template_elements import TemplateElements
 import string
 import json
-from collections import OrderedDict
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 class HudTemplate(object):
     """ Represent a template used to generate head up display over a media.
@@ -55,8 +58,8 @@ class HudTemplate(object):
         with open(json_file, 'w+', encoding='utf-8') as stream:
             json.dump(json_template_list, stream, ensure_ascii=False, indent=4)
 
-        print(f'Dumped template data into:\n'
-              f'{json_file}')
+        logger.info(f'Dumped template data into:\n'
+                    f'{json_file}')
 
     def add_template_element(self, element: base_element.TemplateElement):
         """ Add given element in the template
@@ -141,6 +144,9 @@ class HudTemplate(object):
             # For text elements using dynamic values input
             if hasattr(filter_element, 'text_id') and text_elements_data.get(filter_element.text_id):
                 filter_element.value = text_elements_data[filter_element.text_id].replace('\'', '\\\'')
+            else:
+                logger.warning(f'Failed to find related value for hud dynamic text element: \n'
+                               f'{filter_element}')
 
             # First element of filter has no source group value like "[a]"
             if i == -1:
