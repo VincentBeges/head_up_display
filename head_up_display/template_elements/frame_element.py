@@ -14,7 +14,7 @@ class FrameElement(text_element.BaseTextElement):
     # Number of digit for the written frame number
     digits_number: int = 4
     # Using drawtext expression for format the frame number with n given digits number
-    _frame_pattern = PrivateAttr(default=f'%{{expr_int_format\:n\:u\:{digits_number}}}')
+    _frame_pattern = PrivateAttr(default=f'%{{expr_int_format\\:n\\:u\\:{digits_number}}}')
 
     @computed_field
     def text_value(cls) -> str:

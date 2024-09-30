@@ -13,7 +13,7 @@ class TimecodeElement(text_element.BaseTextElement):
 
     # Custom time format, see https://ffmpeg.org/ffmpeg-filters.html#Text-expansion
     pts_format: str = 'hms'
-    timecode_format: str = f'%{{pts\:{pts_format}}}'
+    timecode_format: str = f'%{{pts\\:{pts_format}}}'
     timecode_rate: int = Field(default=24, gt=0)
 
     @computed_field
