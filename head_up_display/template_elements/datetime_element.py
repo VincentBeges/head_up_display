@@ -14,8 +14,7 @@ class DatetimeElement(text_element.BaseTextElement):
     date_strftime: str = '%Y-%m-%d'
     time_strftime: str = '%H:%M:%S'
 
-    # Set this value if you want a full custom value
-    # Emtpy value = automatic datetime process
+    # Empty value is necessary because inherit from BaseTextElement. Value will be computed
     value: str = ''
 
     @computed_field
@@ -38,11 +37,7 @@ class DatetimeElement(text_element.BaseTextElement):
     def get_filter(self):
         """ Get the text filter used in complex filter """
 
-        if not self.value:
-            # Assigning to conform/validate input data
-            self.value = self.get_date_time_as_str()
-
-        return self._get_draw_text(text_value=self.value)
+        return self._get_draw_text(text_value=self.get_date_time_as_str())
 
     def __repr__(self):
         return f'<TemplateElement:{self.type}: "{self.value}">'
