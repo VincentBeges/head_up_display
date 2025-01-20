@@ -30,7 +30,7 @@ class FilepathElement(text_element.BaseTextElement):
         return value
 
     @staticmethod
-    def _reduce_length(text: str, max_length: int = 10, separator: str = '...'):
+    def _reduce_length(text: str, max_length: int = 20, separator: str = '...'):
         """ Reduce given text by giving max_length + separator
 
         :param text: text to reduce
@@ -38,20 +38,22 @@ class FilepathElement(text_element.BaseTextElement):
         :param separator: separator characters to replace the removed part
         :return: reduced text
         """
-        #TODO: max_length should include the separator inside ?
-        new_text = ''
-        text_length = len(text)
-        split_length = max_length/2
+        if len(text) <= max_length:
+            # Nothing to reduce
+            return text
 
-        for i, char in enumerate(text, start=0):
-            if i < split_length or i >= (text_length - split_length):
-                new_text += char
-            elif i == split_length:
-                new_text += separator
-            else:
-                continue
+        if max_length < len(separator) + 2:
+            raise RuntimeError('Cannot reduce length of given text because max_length is too short compared to '
+                               'separator length. Please increase max_length or reduce separator length. '
+                               )
 
-        return new_text
+        start_length = int(max_length / 2 - (len(separator) / 2))
+        end_length = -1 * start_length
+
+        if len(separator) % 2 != 0 and max_length % 2 == 0:
+            end_length -= 1
+
+        return text[:start_length] + separator + text[end_length:]
 
     def get_filter(self):
         """ Get filter to write path in HUD """
@@ -69,3 +71,13 @@ class FilepathElement(text_element.BaseTextElement):
             text = self._reduce_length(text, max_length=self.max_length)
 
         return self._get_draw_text(text_value=text)
+
+
+if __name__ == '__main__':
+    # filepath = FilepathElement(value=r'C:\Documents\Tests\file.mov')
+    text = r'C:\Documents\Tests\file.mov'
+    r = FilepathElement._reduce_length(text=text, max_length=10)
+    print(r)
+    print(len(r))
+
+    # print(text[5:-5])
