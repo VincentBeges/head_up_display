@@ -34,6 +34,32 @@ class ElementPosition(BaseModel):
 
     #TODO: could be nice to ajust position in pixel like top - 20px
 
+    @staticmethod
+    def _validate_position(value: str|int, valid_positions: list, position_name: str):
+        """ Validate position input
+
+        :param value: position value, can be a string or int
+        :param valid_positions: list of valid positions (should be _H_POS_LIST or _V_POS_LIST)
+        :param position_name: position name, used in error message
+        :return: conformed value
+        :raises ValueError: if value is not valid
+        """
+        if isinstance(value, int):
+            return str(value)
+
+        # String values are "shortcut" automatic values. See _H_POS_LIST or _V_POS_LIST
+        elif isinstance(value, str):
+
+            # Number given as string
+            if value.isdigit():
+                return value
+
+            if value in valid_positions:
+                return value
+
+        raise ValueError(f'Given "{position_name}" value is wrong. Should be {valid_positions} or an integer value, not '
+                         f'"{value}"')
+
     @field_validator('horizontal_position')
     def validate_horizontal_position(cls, value: str, info: ValidationInfo) -> str:
         """ Conform and validate horizontal position input
@@ -42,22 +68,11 @@ class ElementPosition(BaseModel):
         :param info: accessing already validated data
         :return: conformed value
         """
+        return cls._validate_position(value=value,
+                                      valid_positions=cls._H_POS_LIST.default,
+                                      position_name='horizontal_position',
+                                      )
 
-        # Int values are pixel position. Can be positive or negative
-        if isinstance(value, int):
-            # TODO: should negative values return the main width/height size minus given value ?
-            return str(value)
-
-        #TODO: check if string is not a number
-
-        # String values are "shortcut" automatic values. See _H_POS_LIST
-        elif isinstance(value, str):
-            if value in cls._H_POS_LIST.default:
-                return value
-            raise ValueError(f'Given "horizontal_position" value is wrong. Should be {cls._H_POS_LIST.default} or an '
-                             f'integer value, not "{value}"')
-
-        raise TypeError(f'Given "horizontal_position" type is wrong, should be an "int" or "str", not {type(value)}')
 
     @field_validator('vertical_position', mode='before')
     def validate_vertical_position(cls, value: str, values: dict) -> str:
@@ -67,20 +82,10 @@ class ElementPosition(BaseModel):
         :param values: all model values
         :return: conformed value
         """
-        # Int values are pixel position. Can be positive or negative
-        if isinstance(value, int):
-            return str(value)
-
-        # TODO: check if string is not a number
-
-        # String values are "shortcut" automatic values. See V_POS_LIST
-        elif isinstance(value, str):
-            if value in cls._V_POS_LIST.default:
-                return value
-            raise ValueError(f'Given "vertical_position" value is wrong. Should be {cls._V_POS_LIST.default} or an '
-                             f'integer value, not "{value}"')
-
-        raise TypeError(f'Given "vertical_position" type is wrong, should be an "int" or "str", not {type(value)}')
+        return cls._validate_position(value=value,
+                                      valid_positions=cls._V_POS_LIST.default,
+                                      position_name='vertical_position',
+                                      )
 
     def get_position_filter(self):
         """ Returns the correct position for current element to use in ffmpeg filter_complex
@@ -113,11 +118,9 @@ class ElementPosition(BaseModel):
 
         x = '0'
 
-        if isinstance(self.horizontal_position, int):
-            x = str(self.horizontal_position)
-            # TODO: not happening because we convert int to string in the validator
-
         if isinstance(self.horizontal_position, str):
+            if self.horizontal_position.isdigit():
+                x = str(self.horizontal_position)
             if self.horizontal_position == self._LEFT:
                 x = f'{self._OVERLAY_W}*{self.horizontal_margin}/100'
             if self.horizontal_position == self._RIGHT:
@@ -130,10 +133,9 @@ class ElementPosition(BaseModel):
 
         y = '0'
 
-        if isinstance(self.vertical_position, int):
-            y = str(self.vertical_position)
-
         if isinstance(self.vertical_position, str):
+            if self.vertical_position.isdigit():
+                y = str(self.vertical_position)
             if self.vertical_position == self._TOP:
                 y = f'{self._OVERLAY_H}*{self.vertical_margin}/100'
             if self.vertical_position == self._BOTTOM:
@@ -182,3 +184,4 @@ class TemplateElement(ElementPosition, abc.ABC):
 
 if __name__ == '__main__':
     position = ElementPosition(horizontal_position='center')
+    print(position.get_position_filter())
