@@ -1,4 +1,5 @@
 from head_up_display.template_elements import base_element
+from head_up_display import constants
 from pydantic import model_validator, field_validator, ValidationInfo
 from typing import Union, Literal
 import copy
@@ -21,7 +22,7 @@ class BaseTextElement(base_element.TemplateElement):
 
     #TODO: https://stackoverflow.com/questions/43254634/ffmpeg-drawtext-style-bold-italics-underline
     # reinstall ffmpeg with the fontconfig to change police_file and be able to use bold, underline and italic
-    police_file: str = '/Windows/fonts/arial.ttf'
+    police_file: str = constants.POLICE_TEXT_PATH
     bold: bool = False
     underline: bool = False
     italic: bool = False
