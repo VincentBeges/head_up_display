@@ -24,8 +24,23 @@ class TemplateElements:
 
     @classmethod
     def from_json_data_list(cls, json_data_list: list):
-        """ Take the json hud template data list in input and, for each element in the file, will yield the correct
-        element instance """
+        """ This method is used to read a template from a json file.
+        It will loop over the json data list (your template, storing multiple elements) and yield the correct element
+        instance for each element of the json file list.
+
+        Example of valid json data list:
+            [
+            {'type': 'datetime'},
+            {'type': 'filepath', 'max_length': 15},
+            {'type': 'frame', 'start_number': 101, 'digits_number': 3},
+            {'type': 'image', 'path': 'path/to/image.jpg'}, # The path should exist
+            {'type': 'text', 'value': 'Hello World'},
+            {'type': 'text', 'value': 'Another text'},
+            {'type': 'timecode'},
+            ]
+
+
+        """
 
         for element_data in json_data_list:
             # Find related element object
@@ -38,5 +53,13 @@ class TemplateElements:
 
 
 if __name__ == '__main__':
-    elements = list(TemplateElements.from_json_data_list([{'type': 'datetime'}]))
+    elements = list(TemplateElements.from_json_data_list(
+        [
+            {'type': 'datetime'},
+            {'type': 'filepath', 'max_length': 15},
+            {'type': 'frame', 'start_number': 101, 'digits_number': 3},
+            {'type': 'image', 'path': 'path/to/image.jpg'}, # The path should exists
+            {'type': 'text', 'value': 'Hello World'},
+            {'type': 'timecode'}],
+    ))
     print(elements)
