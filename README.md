@@ -134,4 +134,3 @@ Extract a single frame from a media \
 - ffmpeg with fontconfig setup at build
 - pydantic
 
-
