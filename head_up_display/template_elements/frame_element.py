@@ -1,5 +1,5 @@
 from head_up_display.template_elements import text_element
-from pydantic import PrivateAttr, computed_field
+from pydantic import PrivateAttr, computed_field, PositiveInt
 from typing import Literal
 
 
@@ -12,7 +12,7 @@ class FrameElement(text_element.BaseTextElement):
     value: str = r'Frame\: '  # This string will be added before the frame
     start_number: int = 0
     # Number of digit for the written frame number
-    digits_number: int = 4
+    digits_number: PositiveInt = 4
     # Using drawtext expression for format the frame number with n given digits number
     _frame_pattern = PrivateAttr(default=f'%{{expr_int_format\\:n\\:u\\:{digits_number}}}')
 
@@ -38,5 +38,5 @@ class FrameElement(text_element.BaseTextElement):
 
 
 if __name__ == '__main__':
-    frame_element = FrameElement()
+    frame_element = FrameElement(digits_number=-1)
     print(frame_element.get_filter())
