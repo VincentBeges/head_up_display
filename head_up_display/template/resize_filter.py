@@ -1,4 +1,4 @@
-from pydantic import BaseModel, field_validator, ValidationInfo, PrivateAttr, Field, ConfigDict
+from pydantic import BaseModel, field_validator, ValidationInfo, PrivateAttr, Field, ConfigDict, ValidationError
 from head_up_display.hud.generation_config import GenerationConfig
 from typing import Union
 import re
@@ -33,8 +33,11 @@ class ResizeAndPadFilter(BaseModel):
         if isinstance(value, str):
             matched_percent = SEARCH_PERCENT.match(value)
             if matched_percent:
-                return f'{cls.height}*{str(float(matched_percent.group(1)))}/100'
-            return value
+                return f'{info.data['height']}*{str(float(matched_percent.group(1)))}/100'
+            if value.isdigit():
+                return value
+            raise ValueError(f'black_bar_height value should be a digit (pixel size) or a percent value (ex: 2.6%),'
+                             f' not: {value}')
         else:
             return str(value)
 
