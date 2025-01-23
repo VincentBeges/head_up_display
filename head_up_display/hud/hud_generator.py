@@ -79,6 +79,8 @@ class HudGenerator(object):
                                           generation_config: GenerationConfig = None,
                                           text_elements_data: dict = None,
                                           output_file: str = None,
+                                          source_width: int = 720,
+                                          source_height: int = 480,
                                           ):
         """ Test the given template file without giving input
 
@@ -86,6 +88,8 @@ class HudGenerator(object):
         :param generation_config: GenerationConfig object to used to modify input file
         :param text_elements_data: dynamic data to use with template
         :param output_file: A filepath for the exported test file
+        :param source_width: Size of the source media generated (used mainly to test the resize process)
+        :param source_height: Size of the source media generated (used mainly to test the resize process)
         """
         # Load template
         hud_template = HudTemplate.from_template_json_file(json_file=hud_template_filepath)
@@ -94,6 +98,8 @@ class HudGenerator(object):
                                     generation_config=generation_config,
                                     text_elements_data=text_elements_data,
                                     output_file=output_file,
+                                    source_height=source_height,
+                                    source_width=source_width,
                                     )
 
     def generate(self,
