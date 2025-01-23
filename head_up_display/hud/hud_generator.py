@@ -38,7 +38,7 @@ class HudGenerator(object):
                                 source_width: int = 720,
                                 source_height: int = 480,
                                 ):
-        """ Test the given HudTemplate object with a generated media.
+        """ Generate an example media with given hud template
 
         :param hud_template: HudTemplate object to test
         :param generation_config: GenerationConfig object to used to modify input file
