@@ -17,6 +17,7 @@ bar size, above and bellow)
 
 """
 
+#TODO: to correct, make it dynamic
 
 if __name__ == '__main__':
 

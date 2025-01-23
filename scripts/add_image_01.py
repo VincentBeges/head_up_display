@@ -15,13 +15,14 @@ bar size, above and bellow)
 
 """
 
+#TODO: in positioning we have a problem of order if we add black bar
 
 if __name__ == '__main__':
 
     image_filter = ImageElement(
         image_path=os.path.join(EXAMPLE_FILES_DIR, r'testlogo.png'),
         horizontal_position='center',
-        vertical_position='center',
+        vertical_position='top',
     )
 
     hud_template = HudTemplate(template_elements=[
@@ -29,7 +30,7 @@ if __name__ == '__main__':
     ])
 
     config = GenerationConfig()
-    config.do_resize = False
+    config.do_resize = True
     # config.auto_scale_hud_elements = True  # Necessary to scale any hud elements
     config.black_bar_height = 30
 
