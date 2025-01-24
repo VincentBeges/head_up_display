@@ -115,6 +115,7 @@ In your HUD template you can use multiple elements to apply in overlay:
 - **timecode element**: Used to add the current timecode. Choose the timecode format (according FFMPEG documentation: https://ffmpeg.org/ffmpeg-filters.html#Text-expansion)
 - **image element**: Used to add another image in overlay. You can choose the position and size of the image, or keep automatic resize.
 
+_See the scripts and example directories for each template element result_
 
 ## Advanced usage
 
@@ -125,6 +126,15 @@ For **vertical position** you can use **"top"**, **"center"** or **"bottom"**. \
 
 You can also set up precise positioning using pixel values, it's gonna be the x and y coordinate from the top left corner of media.
 
+```python
+from head_up_display.template_elements.text_element import TextElement
+
+text = TextElement(value='this is my text',
+                   color='red',
+                   horizontal_position='center', # simple positioning
+                   vertical_position=22, # precise positioning
+                   )
+```
 
 ### Automatic resize of text element (text, frame, etc) all or some only
 You can resize text elements (text, date/time, filepath/filename, frame, timecode) to fit in the black bar size.
@@ -135,11 +145,37 @@ config = GenerationConfig(auto_scale_hud_elements=True, # True to automatically 
                           override_existing_size_values=False, # False will automatically resize element only if 
                                                                # their `font_size` attribute value is 0
                           )
+
+from head_up_display.template_elements.datetime_element import DatetimeElement
+from head_up_display.template_elements.text_element import TextElement
+
+date = DatetimeElement(type='date',
+                       horizontal_position='center',
+                       vertical_position='top',
+                       size=0, # Apply automatic resize to fit in the black bar
+                   )
+
+text = TextElement(value='this is my text',
+                   horizontal_position='center',
+                   vertical_position='bottom',
+                   size=20, # Will not be resized
+                   )
+
 ```
-According the `override_existing_size_values` attribute value you may have to set `font_size` to 0 in your text element to be resized.
 
 ### Choose text colors
 
+For each text element (text, date/time, filepath/filename, frame, timecode) you can choose the color. \
+It's based on the FFMPEG color filter documentation: \
+https://ffmpeg.org/ffmpeg-filters.html#color-1
+
+```python
+from head_up_display.template_elements.text_element import TextElement
+
+text = TextElement(value='this is my aquamarine nice text',
+                   color='Aquamarine',
+                   )
+```
 
 
 ### Testing a templates without input media
@@ -160,6 +196,7 @@ HudGenerator.test_given_hud_template(hud_template=HudTemplate,
 You can also generate it for a template json file
 ```python
 from head_up_display.hud.hud_generator import HudGenerator
+
 HudGenerator.test_given_hud_template_from_file(hud_template_filepath='/path/to/template/as/json/file.json',
                                                generation_config=None, # Or a GenerationConfig object
                                                text_elements_data=None, # Or a dict if you have dynamic text elements
@@ -189,6 +226,29 @@ from head_up_display.template.hud_template import HudTemplate
 
 template = HudTemplate.from_template_json_file(json_file='/path/to/export/template.json')
 ```
+
+The result file is something like that:
+```json
+[
+    {
+        "horizontal_position": "center",
+        "vertical_position": "top",
+        "horizontal_margin": 10.0,
+        "vertical_margin": 20.0,
+        "type": "text",
+        "value": "",
+        "color": "red",
+        "font_size": 0,
+        "police_file": "/Windows/fonts/arial.ttf",
+        "bold": false,
+        "underline": false,
+        "italic": false,
+        "text_id": "foo"
+    }
+]
+```
+We have here a template with only one text element in a Json file.
+
 
 ### Fill text element dynamically
 The text element has two behaviors:
@@ -226,7 +286,9 @@ generator.generate(source_file='/source/file/media.mp4',
 
 ### Resize image element
 Adding images in overlay using a ImageElement allow you to resize it. Note that it will slower a little the process 
-because FFMPEG has to do the resize. **No automatic resize for now.**
+because FFMPEG has to do the resize.
+
+**No automatic resize for now. TOFIX**
 ```python
 from head_up_display.template_elements.image_element import ImageElement
 
