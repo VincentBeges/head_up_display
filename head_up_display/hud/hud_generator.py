@@ -51,14 +51,21 @@ class HudGenerator(object):
         input_file = tempfile.NamedTemporaryFile(mode='w+', prefix='test_movie_input', suffix='.mp4').name
         output_file = output_file or input_file.replace('input', 'output')
 
+        # Generate a test movie to apply HUD over
         command = f'ffmpeg -f lavfi -i testsrc -t 30 -s {source_width}x{source_height} -pix_fmt yuv420p {input_file}'
         os.system(command=command)
 
         if not os.path.exists(input_file):
             raise OSError(f'Failed to create a test movie to apply HUD over:\n {input_file}')
 
+        # Don't resize the generated movie, just add black bar
+        config = generation_config or GenerationConfig(add_black_bar=True,
+                                                       black_bar_height=int(source_height * 0.1),
+                                                       do_resize=False,
+                                                       )
+
         generator = cls(hud_template=hud_template,
-                        generation_config=generation_config,
+                        generation_config=config,
                         )
         generator.generate(source_file=input_file,
                            destination_file=output_file,

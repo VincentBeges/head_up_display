@@ -1,6 +1,6 @@
-from pydantic import computed_field
-from head_up_display.template_elements import text_element
 from datetime import datetime
+from head_up_display.template_elements import text_element
+from pydantic import computed_field
 from typing import Literal
 
 
@@ -10,9 +10,10 @@ class DatetimeElement(text_element.BaseTextElement):
     """
     type: Literal['datetime', 'date', 'time'] = 'datetime'
 
-    date_time_strftime: str = '%Y-%m-%d %H:%M:%S'
-    date_strftime: str = '%Y-%m-%d'
-    time_strftime: str = '%H:%M:%S'
+    date_time_strftime: str = '%Y-%m-%d %H:%M:%S'.replace(':', '\\:')
+    date_strftime: str = '%Y-%m-%d'.replace(':', '\\:')
+    time_strftime: str = '%H:%M:%S'.replace(':', '\\:')
+    #TODO: use validator to conform them
 
     # Empty value is necessary because inherit from BaseTextElement. Value will be computed
     value: str = ''

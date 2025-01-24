@@ -98,7 +98,7 @@ config = GenerationConfig(do_resize=True,
                           resize_width=1920,
                           resize_height=1080,
                           add_black_bar=True,
-                          black_bar_height=20,
+                          black_bar_height=20, # 20 pixel on top and 20 pixel on bottom
                           )
 
 from head_up_display.hud.hud_generator import HudGenerator

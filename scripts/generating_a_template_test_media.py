@@ -6,18 +6,23 @@ import os
 EXAMPLE_FILES_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..', 'examples'))
 EXAMPLE_TEMPLATE_FILE = os.path.join(EXAMPLE_FILES_DIR, 'hud_template.json')
 
-def testing_a_template_from_objects():
+destination_file = os.path.join(EXAMPLE_FILES_DIR, 'template_test_media.mp4')
+
+def generating_a_template_test_media():
     # Create a simple template
-    template = HudTemplate(template_elements=[TextElement(vertical_position='center',
+    template = HudTemplate(template_elements=[TextElement(vertical_position='bottom',
                                                           horizontal_position='center',
                                                           value='Foo this is my value',
-                                                          font_size=30,
+                                                          font_size=0,
+                                                          color='yellow'
                                                           )])
 
     # Test the template on a generated file
-    HudGenerator.test_given_hud_template(hud_template=template)
+    HudGenerator.test_given_hud_template(hud_template=template,
+                                         output_file=destination_file,
+                                         )
 
-def testing_a_template_from_file():
+def generating_a_template_test_media_from_file():
     # Load a template file
     # The template is using a dynamic text template element, so we need to give its value
     text_element_data = {'foo': 'This is the printed text'}
@@ -25,8 +30,9 @@ def testing_a_template_from_file():
     # Test the file template
     HudGenerator.test_given_hud_template_from_file(hud_template_filepath=EXAMPLE_TEMPLATE_FILE,
                                                    text_elements_data=text_element_data,
+                                                   output_file=destination_file,
                                                    )
 
 
 if __name__ == '__main__':
-    testing_a_template_from_file()
+    generating_a_template_test_media_from_file()

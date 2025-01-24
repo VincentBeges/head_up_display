@@ -25,14 +25,15 @@ if __name__ == '__main__':
                                        )
 
     date_element = DatetimeElement(type='date',
+                                   color='green',
                                    vertical_position='center',
                                    horizontal_position='center',
                                    )
 
     time_element = DatetimeElement(type='time',
+                                   color='blue',
                                    vertical_position='bottom',
                                    horizontal_position='center',
-                                   color='red'
                                    )
 
     hud_template = HudTemplate(template_elements=[
