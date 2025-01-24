@@ -1,7 +1,7 @@
 # Tool development
 ## Features
 **Done**
-- [x] generate HUD over a movie (keeping codec and quality)
+- [x] generate HUD over a movie
 - [x] resize source media and add black bar on top and bottom
 - [x] add hud elements using templates defined in a json file or with python classes
 -  elements we can use in templates are:
@@ -20,6 +20,9 @@
 - [x] store the ffmpeg command in a file
 
 **To do**
+- [ ] ensure we keep quality of the source media (codec and quality)
+- [ ] fix resize input image
+- [ ] fix the positioning problem with image elements
 - [ ] setup with pip install
 - [ ] ensure it's working on Linux
 - [ ] add usage of FFMPEG fontconfig if available

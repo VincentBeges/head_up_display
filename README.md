@@ -2,11 +2,15 @@ from tempfile import template
 
 # Head up display generator
 This is a simple tool to create head up displays (HUD) over media using FFMPEG.
- 
-ADD IMAGE EXAMPLES
 
 Adding a head up display is a process used in movie/animation/VFX industries to apply in overlay of an input media some visual 
 data (text, frame number, logo, etc), mostly for reviewing purpose.
+
+**Input media** \
+![Input media](./documentation/example_input.jpg)
+
+**Output media with head up display (HUD)** \
+![Input media](./documentation/example_output.jpg)
 
 ---
 
@@ -133,6 +137,10 @@ config = GenerationConfig(auto_scale_hud_elements=True, # True to automatically 
                           )
 ```
 According the `override_existing_size_values` attribute value you may have to set `font_size` to 0 in your text element to be resized.
+
+### Choose text colors
+
+
 
 ### Testing a templates without input media
 You can generate a simple media for a given template, pretty useful to setup templates 

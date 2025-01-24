@@ -2,17 +2,20 @@ from head_up_display.hud.hud_generator import HudGenerator
 from head_up_display.template.hud_template import HudTemplate
 from head_up_display.template_elements.filepath_element import FilepathElement
 from head_up_display.template_elements.frame_element import FrameElement
-from head_up_display.template_elements.image_element import ImageElement
+from head_up_display.template_elements.datetime_element import DatetimeElement
 from head_up_display.template_elements.text_element import TextElement
 from head_up_display.template_elements.timecode_element import TimecodeElement
 
 from head_up_display.hud.generation_config import GenerationConfig
 import os
 
+from tests.unit.template_elements.test_datetime_element import datetime_element
+
 EXAMPLE_FILES_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..', 'examples'))
 
 """
-This example is an example of a complex hud generation with multiple hud elements.
+This example is another example of complex utilisation
+
 """
 
 
@@ -20,8 +23,9 @@ if __name__ == '__main__':
 
     ## 1 PREPARE TEMPLATE
 
-    text_filter_01 = TextElement(value='Project Test',
+    text_filter_01 = TextElement(value='',
                                  color='red',
+                                 text_id='movie_step',
                                  horizontal_position='center',
                                  vertical_position='top',
                                  font_size=0,  # Automatic size
@@ -47,13 +51,15 @@ if __name__ == '__main__':
 
     timecode_element = TimecodeElement(vertical_position='bottom',
                                        horizontal_position='right',
+                                       pts_format='ms',
                                        color='white',
                                        )
 
-    image_filter = ImageElement(image_path=os.path.join(EXAMPLE_FILES_DIR, r'testlogo.png'),
-                                horizontal_position='left',
-                                vertical_position='bottom',
-                                )
+    datetime_element = DatetimeElement(type='date',
+                                       vertical_position='bottom',
+                                       horizontal_position='left',
+                                       color='white',
+                                       )
 
     hud_template = HudTemplate(template_elements=[
         text_filter_01,
@@ -61,12 +67,16 @@ if __name__ == '__main__':
         frame_element,
         filename_element,
         timecode_element,
-        image_filter,
+        datetime_element
     ])
 
     ## 2 PREPARE GENERATION
 
     config = GenerationConfig()
+    # We keep the size of the media
+    config.resize_width = 2048
+    config.resize_height = 872
+
     # Don't resize the input media
     config.do_resize = True
     # Define the black bar height
@@ -78,13 +88,12 @@ if __name__ == '__main__':
 
     ## 3 EXECUTE GENERATION
 
-    source_file = os.path.join(EXAMPLE_FILES_DIR, r'testsrc.mp4')
-    filename, ext = os.path.splitext(source_file)
-    destination_file = '{filename}_result_{test_name}{ext}'.format(filename=filename,
-                                                                   test_name=os.path.basename(__file__),
-                                                                   ext=ext)
+    source_file = os.path.realpath(os.path.join('..', 'examples', 'Eugene_S02_sh004_2_INPUT.mov'))
+    destination_file = source_file.replace('_INPUT', '_OUTPUT')
 
-    text_element_data = {'username': 'User Name'}
+    text_element_data = {'username': 'Vincent B.',
+                         'movie_step': 'Eugene - Compositing',
+                         }
 
     hud_generator.generate(source_file=source_file,
                            destination_file=destination_file,
