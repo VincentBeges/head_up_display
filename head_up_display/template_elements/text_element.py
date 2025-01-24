@@ -46,7 +46,7 @@ class BaseTextElement(base_element.TemplateElement):
     def _get_draw_text(self, text_value):
         """ Get the draw text to write text with complex_filter """
         text_filter = 'drawtext='
-        text_filter += f'fontfile={self.police_file}:'
+        text_filter += f'fontfile={self.police_file.replace(':', '\\:')}:'
         text_filter += f'text=\'{text_value}\':'
         text_filter += f'fontcolor={self.color}:'
         text_filter += f'fontsize={str(self.font_size)}:'
@@ -97,25 +97,25 @@ if __name__ == '__main__':
     text_filter = TextElement(value='this is my text', text_id='foo', type='text')
     text_filter.horizontal_position = 'right'
     print(text_filter.get_filter())
-    print(text_filter.__repr__())
-
-    data = {
-        "horizontal_position": "center",
-        "vertical_position": "center",
-        "horizontal_margin": 10.0,
-        "vertical_margin": 20.0,
-        "type": "text",
-        "value": "",
-        "color": "black",
-        "font_size": 0,
-        "police_file": "/Windows/fonts/arial.ttf",
-        "bold": False,
-        "underline": False,
-        "italic": False,
-        "text_id": "foo",
-    }
-
-    text_element = TextElement.from_dict(data)
-    print(text_element)
-    print(text_element.model_fields.get('type'))
+    # print(text_filter.__repr__())
+    #
+    # data = {
+    #     "horizontal_position": "center",
+    #     "vertical_position": "center",
+    #     "horizontal_margin": 10.0,
+    #     "vertical_margin": 20.0,
+    #     "type": "text",
+    #     "value": "",
+    #     "color": "black",
+    #     "font_size": 0,
+    #     "police_file": "/Windows/fonts/arial.ttf",
+    #     "bold": False,
+    #     "underline": False,
+    #     "italic": False,
+    #     "text_id": "foo",
+    # }
+    #
+    # text_element = TextElement.from_dict(data)
+    # print(text_element)
+    # print(text_element.model_fields.get('type'))
 

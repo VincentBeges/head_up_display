@@ -21,6 +21,8 @@
 
 **To do**
 - [ ] setup with pip install
+- [ ] ensure it's working on Linux
+- [ ] add usage of FFMPEG fontconfig if available
 - [ ] automatic test with Github actions
 - [ ] print CICD badge in README
 - [ ] documentation for all elements + examples

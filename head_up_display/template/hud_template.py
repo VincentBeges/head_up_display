@@ -144,9 +144,6 @@ class HudTemplate(object):
             # For text elements using dynamic values input
             if hasattr(filter_element, 'text_id') and text_elements_data.get(filter_element.text_id):
                 filter_element.value = text_elements_data[filter_element.text_id].replace('\'', '\\\'')
-            else:
-                logger.warning(f'Failed to find related value for hud dynamic text element: \n'
-                               f'{filter_element}')
 
             # First element of filter has no source group value like "[a]"
             if i == -1:
